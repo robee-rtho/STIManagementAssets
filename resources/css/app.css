@@ -1,0 +1,13 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.login-page {
+    background-image: url('http://127.0.0.1:8000/images/background-login.png');
+    background-size: cover;
+    background-position: center;
+}
+
+.login-page .card {
+    @apply bg-custom-color-card bg-opacity-80 backdrop-blur-lg shadow-lg rounded-3xl p-8 max-w-md w-full;
+}
