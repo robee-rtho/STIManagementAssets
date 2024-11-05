@@ -39,43 +39,52 @@
 
     <!-- Main Content -->
     <div class="container mx-auto mt-4 p-4">
-        <h2 class="text-2xl font-bold mr-4 mb-2">Kategori Asset</h2>
+        <h2 class="text-2xl font-bold mr-4 mb-2">Kategori Aset</h2>
+
+        <!-- Pesan Sukses atau Kesalahan -->
+        @if (session('success'))
+        <div class="mb-4 text-green-500">
+            {{ session('success') }}
+        </div>
+        @endif
+
+        @if ($errors->any())
+        <div class="mb-4 text-red-500">
+            <ul>
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
+        <!-- Form untuk Menambah Kategori -->
+        <form method="POST" action="{{ route('kategori.store') }}" class="mb-4" enctype="multipart/form-data">
+            @csrf
+            <div class="flex items-center">
+                <input type="text" name="name" placeholder="Nama Kategori" required class="border rounded-lg px-4 py-2 mr-2">
+                <input type="file" name="icon" accept="image/*" class="border rounded-lg px-4 py-2 mr-2">
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Tambah Kategori</button>
+            </div>
+        </form>
+
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Kategori Aset 1 -->
-            <a href="{{ route('category.show', ['category' => 'kategori1']) }}" class="bg-white rounded-lg shadow p-4 text-center hover:shadow-lg transition">
-                <img src="{{ asset('images/logo-kategori1.png') }}" alt="Kategori 1" class="h-24 w-24 mx-auto mb-2">
-                <h3 class="text-lg font-bold">Kategori 1</h3>
-            </a>
+            @foreach ($categories as $category)
+            <div class="bg-white rounded-lg shadow p-4 text-center hover:shadow-lg transition relative">
+                <!-- Menambahkan elemen untuk menampilkan ikon -->
+                <img src="{{ asset('storage/' . $category->icon) }}" alt="{{ $category->name }} Icon" class="h-16 w-16 mx-auto mb-2">
 
-            <!-- Kategori Aset 2 -->
-            <a href="{{ route('category.show', ['category' => 'kategori2']) }}" class="bg-white rounded-lg shadow p-4 text-center hover:shadow-lg transition">
-                <img src="{{ asset('images/logo-kategori2.png') }}" alt="Kategori 2" class="h-24 w-24 mx-auto mb-2">
-                <h3 class="text-lg font-bold">Kategori 2</h3>
-            </a>
+                <h3 class="text-lg font-bold">
+                    <a href="{{ route('category.show', ['category' => $category->name]) }}" class="text-blue-500 hover:underline">{{ $category->name }}</a>
+                </h3>
 
-            <!-- Kategori Aset 3 -->
-            <a href="{{ route('category.show', ['category' => 'kategori3']) }}" class="bg-white rounded-lg shadow p-4 text-center hover:shadow-lg transition">
-                <img src="{{ asset('images/logo-kategori3.png') }}" alt="Kategori 3" class="h-24 w-24 mx-auto mb-2">
-                <h3 class="text-lg font-bold">Kategori 3</h3>
-            </a>
-
-            <!-- Kategori Aset 4 -->
-            <a href="{{ route('category.show', ['category' => 'kategori4']) }}" class="bg-white rounded-lg shadow p-4 text-center hover:shadow-lg transition">
-                <img src="{{ asset('images/logo-kategori4.png') }}" alt="Kategori 4" class="h-24 w-24 mx-auto mb-2">
-                <h3 class="text-lg font-bold">Kategori 4</h3>
-            </a>
-
-            <!-- Kategori Aset 5 -->
-            <a href="{{ route('category.show', ['category' => 'kategori5']) }}" class="bg-white rounded-lg shadow p-4 text-center hover:shadow-lg transition">
-                <img src="{{ asset('images/logo-kategori5.png') }}" alt="Kategori 5" class="h-24 w-24 mx-auto mb-2">
-                <h3 class="text-lg font-bold">Kategori 5</h3>
-            </a>
-
-            <!-- Kategori Aset 6 -->
-            <a href="{{ route('category.show', ['category' => 'kategori6']) }}" class="bg-white rounded-lg shadow p-4 text-center hover:shadow-lg transition">
-                <img src="{{ asset('images/logo-kategori6.png') }}" alt="Kategori 6" class="h-24 w-24 mx-auto mb-2">
-                <h3 class="text-lg font-bold">Kategori 6</h3>
-            </a>
+                <form method="POST" action="{{ route('kategori.destroy', $category->name) }}" class="absolute top-2 right-2">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="text-red-500 hover:text-red-600">Hapus</button>
+                </form>
+            </div>
+            @endforeach
         </div>
     </div>
 

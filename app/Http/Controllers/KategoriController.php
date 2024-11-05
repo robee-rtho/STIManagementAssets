@@ -9,12 +9,6 @@ use App\Models\Asset;
 
 class KategoriController extends Controller
 {
-    public function index()
-    {
-        // Mengembalikan tampilan kategori
-        return view('kategori');
-    }
-
     public function show($category)
     {
         // Ambil aset berdasarkan kategori dari database menggunakan model Asset
