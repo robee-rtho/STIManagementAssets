@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\RiwayatController;
+use App\Http\Controllers\TambahKategori;
 
 // Route::get('/', function () {
 //     return view('login');
@@ -18,10 +19,18 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+<<<<<<< HEAD
     Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori');
     Route::post('/kategori', [KategoriController::class, 'store'])->name('kategori.store'); // Untuk menambah kategori
     Route::get('/kategori/{categoryName}', [AssetController::class, 'indexByCategory'])->name('kategori.indexByCategory');
     Route::delete('/kategori/{category}', [KategoriController::class, 'destroy'])->name('kategori.destroy'); // Untuk menghapus kategori
+=======
+    Route::get('/kategori', [TambahKategori::class, 'index'])->name('kategori');
+    Route::post('/kategori', [TambahKategori::class, 'store'])->name('kategori.store'); // Untuk menambah kategori
+    Route::delete('/kategori/{category}', [TambahKategori::class, 'destroy'])->name('kategori.destroy'); // Untuk menghapus kategori
+    Route::get('/kategori/{category}', [KategoriController::class, 'show'])->name('category.show');
+    Route::post('/kategori/{category}/store', [KategoriController::class, 'store'])->name('asset.store');
+>>>>>>> 0f916f52f1790ca20a63f04a4553d9821830a02a
     Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat');
     Route::delete('/riwayat/{id}', [RiwayatController::class, 'destroy'])->name('riwayat.destroy');
     Route::post('/assets/{category}', [AssetController::class, 'store'])->name('asset.store');

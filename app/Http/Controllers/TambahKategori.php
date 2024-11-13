@@ -1,16 +1,11 @@
 <?php
 
 namespace App\Http\Controllers;
-
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
-use App\Models\riwayat;
-use App\Models\Asset;
 use App\Models\Kategori;
+use Illuminate\Http\Request;
 
-class KategoriController extends Controller
+class TambahKategori extends Controller
 {
-<<<<<<< HEAD
     public function index()
     {
         // Mengambil semua kategori dari database
@@ -18,17 +13,6 @@ class KategoriController extends Controller
         return view('kategori', compact('categories'));
     }
 
-=======
->>>>>>> 0f916f52f1790ca20a63f04a4553d9821830a02a
-    public function show($category)
-    {
-        // Ambil aset berdasarkan kategori dari database menggunakan model Asset
-        $assets = Asset::where('id', $category)->get(); // Mengambil data dari database
-
-        return view('category.show', compact('assets', 'category'));
-    }
-
-    // Menyimpan data aset baru
     public function store(Request $request)
     {
         // Validasi input
@@ -65,4 +49,6 @@ class KategoriController extends Controller
 
         return redirect()->route('kategori')->withErrors(['msg' => 'Kategori tidak ditemukan.']);
     }
+
+
 }
