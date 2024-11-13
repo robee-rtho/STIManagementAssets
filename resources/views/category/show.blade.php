@@ -37,7 +37,20 @@
         <div class="mb-4">
             <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" onclick="openModal()">Tambah Aset</button>
         </div>
-
+        @if($assets->isEmpty())
+    <p>Tidak ada aset yang ditemukan.</p>
+@else
+    @foreach ($assets as $asset)
+        <tr>
+            <td class="py-2 px-4 border">{{ $asset->id_aset }}</td>
+            <td class="py-2 px-4 border">{{ $asset->name }}</td>
+            <td class="py-2 px-4 border">{{ $asset->created_at }}</td>
+            <td class="py-2 px-4 border">
+                <a href="{{ route('asset.show', $asset['id']) }}" class="text-blue-500 hover:underline">Edit</a>
+            </td>
+        </tr>
+    @endforeach
+@endif
         <!-- Tabel Daftar Aset -->
         <div class="overflow-x-auto">
             <table class="min-w-full bg-white border">
@@ -45,7 +58,6 @@
                     <tr class="bg-gray-200">
                         <th class="py-2 px-4 border">ID Barang</th>
                         <th class="py-2 px-4 border">Nama Barang</th>
-                        <th class="py-2 px-4 border">Kategori</th>
                         <th class="py-2 px-4 border">Tanggal</th>
                         <th class="py-2 px-4 border">Aksi</th>
                     </tr>
@@ -55,8 +67,7 @@
                     <tr>
                         <td class="py-2 px-4 border">{{ $asset->id_aset }}</td>
                         <td class="py-2 px-4 border">{{ $asset->name }}</td>
-                        <td class="py-2 px-4 border">{{ $asset->category }}</td>
-                        <td class="py-2 px-4 border">{{ $asset->tanggal_penerimaan }}</td>
+                        <td class="py-2 px-4 border">{{ $asset->created_at }}</td>
                         <td class="py-2 px-4 border">
                             <a href="{{ route('asset.show', $asset['id']) }}" class="text-blue-500 hover:underline ">Edit</a>
                         </td>
@@ -75,41 +86,29 @@
                 @csrf
                 <input type="hidden" name="category" value="{{ $category }}">
 
-                <!-- ID Aset  -->
-                <div class="mb-4">
-                    <label for="id_aset" class="block text-gray-700">ID Aset</label>
-                    <input type="text" name="id_aset" id="id_aset" class="w-full px-4 py-2 border rounded-lg">
-                </div>
-
-
                 <!-- Nama Barang -->
                 <div class="mb-4">
                     <label for="name" class="block text-gray-700">Nama Barang</label>
-                    <input type="text" name="name" id="name" class="w-full px-4 py-2 border rounded-lg">
+                    <input type="text" name="name" id="name" required class="w-full px-4 py-2 border rounded-lg">
                 </div>
 
                 <!-- Jenis Aset -->
                 <div class="mb-4">
                     <label for="jenis_aset" class="block text-gray-700">Jenis Aset</label>
-                    <input type="text" name="jenis_aset" id="jenis_aset" class="w-full px-4 py-2 border rounded-lg">
+                    <input type="text" name="jenis_aset" id="jenis_aset" required class="w-full px-4 py-2 border rounded-lg">
                 </div>
 
-                <!-- Tanggal Penerimaan -->
-                <div class="mb-4">
-                    <label for="tanggal_penerimaan" class="block text-gray-700">Tanggal Penerimaan</label>
-                    <input type="date" name="tanggal_penerimaan" id="tanggal_penerimaan" class="w-full px-4 py-2 border rounded-lg">
-                </div>
 
                 <!-- Gambar Aset -->
                 <div class="mb-4">
                     <label for="gambar_aset" class="block text-gray-700">Gambar Aset</label>
                     <input type="file" name="gambar_aset" id="gambar_aset" class="w-full px-4 py-2 border rounded-lg">
                 </div>
-
+                <div class="flex justify-between">
                 <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Simpan Aset</button>
+                <button type="button" onclick="closeModal()" class="bg-gray-300 text-gray-700 px-4 py-2 rounded-lg">Batal</button>
+            </div>
             </form>
-
-
         </div>
     </div>
 

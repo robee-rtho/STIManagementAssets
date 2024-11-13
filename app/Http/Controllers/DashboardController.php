@@ -11,11 +11,6 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        // Ambil jumlah aset berdasarkan kategori
-        $jumlahAsetPerKategori = Asset::select('category', DB::raw('count(*) as total'))
-            ->groupBy('category')
-            ->pluck('total', 'category');
-
-        return view('dashboard', compact('jumlahAsetPerKategori'));
+        return view('dashboard');
     }
 }

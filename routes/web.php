@@ -19,10 +19,12 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori');
-    Route::get('/kategori/{category}', [KategoriController::class, 'show'])->name('category.show');
-    Route::post('/kategori/{category}/store', [KategoriController::class, 'store'])->name('asset.store');
+    Route::post('/kategori', [KategoriController::class, 'store'])->name('kategori.store'); // Untuk menambah kategori
+    Route::get('/kategori/{categoryName}', [AssetController::class, 'indexByCategory'])->name('kategori.indexByCategory');
+    Route::delete('/kategori/{category}', [KategoriController::class, 'destroy'])->name('kategori.destroy'); // Untuk menghapus kategori
     Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat');
     Route::delete('/riwayat/{id}', [RiwayatController::class, 'destroy'])->name('riwayat.destroy');
+    Route::post('/assets/{category}', [AssetController::class, 'store'])->name('asset.store');
     Route::get('/asset/{id}', [AssetController::class, 'show'])->name('asset.show');
     Route::get('asset/{id}/edit', [AssetController::class, 'edit'])->name('asset.edit');
     Route::put('/asset/{id}', [AssetController::class, 'update'])->name('asset.update');
