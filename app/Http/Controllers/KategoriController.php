@@ -6,63 +6,59 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\riwayat;
 use App\Models\Asset;
-use App\Models\Kategori;
 
 class KategoriController extends Controller
 {
-<<<<<<< HEAD
-    public function index()
-    {
-        // Mengambil semua kategori dari database
-        $categories = Kategori::all(); // Mengambil data kategori
-        return view('kategori', compact('categories'));
-    }
-
-=======
->>>>>>> 0f916f52f1790ca20a63f04a4553d9821830a02a
     public function show($category)
     {
         // Ambil aset berdasarkan kategori dari database menggunakan model Asset
-        $assets = Asset::where('id', $category)->get(); // Mengambil data dari database
+        $assets = Asset::where('category', $category)->get(); // Mengambil data dari database
 
         return view('category.show', compact('assets', 'category'));
     }
 
     // Menyimpan data aset baru
-    public function store(Request $request)
+    public function store(Request $request, $category)
     {
         // Validasi input
         $request->validate([
-            'name' => 'required|string|max:255|unique:kategori',
-            'icon' => 'nullable|image|max:2048', // Validasi kategori unik
+            'name' => 'required|string|max:255',
+            'gambar_aset' => 'nullable|image|mimes:jpg,png,jpeg|max:2048', // Maks 2MB dan format JPG/JPEG
         ]);
 
-        //Simpan Kategori Baru
-        $kategori = new Kategori();
-        $kategori->name = $request->name;
+        // Dapatkan kategori berdasarkan parameter yang diklik
+        $kategori = strtoupper($category);
 
-        if ($request->hasFile('icon')) {
-            $file = $request->file('icon');
+        // Pembuatan ID Aset seperti dijelaskan sebelumnya...
+        $latestAsset = Asset::where('id_aset', 'like', "{$kategori}-%")->latest('id_aset')->first();
+        $newNumber = $latestAsset ? intval(substr($latestAsset->id_aset, strlen($kategori) + 1)) + 1 : 1;
+        $newIdAset = $kategori . '-' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
+
+        // Simpan data aset
+        $asset = new Asset();
+        $asset->id_aset = $newIdAset;
+        $asset->name = $request->name;
+        $asset->category = $category;
+        $asset->tanggal_penerimaan = now();
+
+        // Simpan gambar jika ada
+        if ($request->hasFile('gambar_aset')) {
+            $file = $request->file('gambar_aset');
             $filename = time() . '_' . $file->getClientOriginalName();
-            $path = $file->storeAs('icons', $filename, 'public'); // Simpan ikon di storage/app/public/icons
-            $kategori->icon = $path; // Simpan path ikon ke dalam kolom icon
+            $path = $file->storeAs('assets', $filename, 'public');
+            $asset->gambar_aset = $path;
         }
 
-        $kategori->save(); // Simpan kategori ke dalam database
+        $asset->save();
 
-        return redirect()->route('kategori')->with('success', 'Kategori berhasil ditambahkan.');
-    }
+        // Simpan riwayat
+        $riwayat = new Riwayat();
+        $riwayat->asset_id = $asset->id;
+        $riwayat->admin = Auth::user()->name;
+        $riwayat->tanggal = now();
+        $riwayat->keterangan = 'Aset baru ditambahkan';
+        $riwayat->save();
 
-    public function destroy($category)
-    {
-        // Hapus kategori
-        $categoryToDelete = Kategori::where('name', $category)->first();
-
-        if ($categoryToDelete) {
-            $categoryToDelete->delete();
-            return redirect()->route('kategori')->with('success', 'Kategori berhasil dihapus.');
-        }
-
-        return redirect()->route('kategori')->withErrors(['msg' => 'Kategori tidak ditemukan.']);
+        return redirect()->route('category.show', $category)->with('success', 'Aset berhasil ditambahkan.');
     }
 }

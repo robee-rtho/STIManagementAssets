@@ -30,12 +30,16 @@
 
     <div class="container mx-auto mt-4 p-4">
         <h1 class="text-2xl font-bold">Detail Aset: {{ $asset->name }}</h1>
-        <p><strong>Kategori:</strong> {{ $category }}</p>
+        <br>
+        @if (session('success'))
+        <div class="bg-green-500 text-white p-2 mb-4 rounded">
+            {{ session('success') }}
+        </div>
+        @endif
 
         <div class="mt-4">
             <p><strong>ID Aset:</strong> {{ $asset->id_aset }}</p>
             <p><strong>Nama Barang:</strong> {{ $asset->name }}</p>
-            <p><strong>Jenis Aset:</strong> {{ $asset->jenis_aset }}</p>
             <p><strong>Tanggal Penerimaan:</strong> {{ $asset->tanggal_penerimaan }}</p>
             <p><strong>Kategori:</strong> {{ $asset->category }}</p>
 
@@ -70,17 +74,12 @@
 
                     <div class="mb-4">
                         <label for="nama_barang" class="block text-gray-700">Nama Barang</label>
-                        <input type="text" name="nama_barang" id="nama_barang" class="w-full px-4 py-2 border rounded-lg" required>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="jenis_aset" class="block text-gray-700">Jenis Aset</label>
-                        <input type="text" name="jenis_aset" id="jenis_aset" class="w-full px-4 py-2 border rounded-lg" required>
+                        <input type="text" name="name" id="nama_barang" class="w-full px-4 py-2 border rounded-lg" value="{{ $asset->name }}" required>
                     </div>
 
                     <div class="mb-4">
                         <label for="tanggal_penerimaan" class="block text-gray-700">Tanggal Penerimaan</label>
-                        <input type="date" name="tanggal_penerimaan" id="tanggal_penerimaan" class="w-full px-4 py-2 border rounded-lg" required>
+                        <input type="date" name="tanggal_penerimaan" id="tanggal_penerimaan" class="w-full px-4 py-2 border rounded-lg" value="{{ $asset->tanggal_penerimaan }}" required>
                     </div>
 
                     <div class="mb-4">
@@ -91,6 +90,7 @@
                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Simpan Perubahan</button>
                     <button type="button" class="bg-red-500 text-white px-4 py-2 rounded-lg" onclick="closeModal()">Batal</button>
                 </form>
+
             </div>
         </div>
     </div>
@@ -102,7 +102,6 @@
         function openEditModal(name, jenis_aset, tanggal_penerimaan, id) {
             // Isi form dengan data yang diterima
             document.getElementById('nama_barang').value = name;
-            document.getElementById('jenis_aset').value = jenis_aset;
             document.getElementById('tanggal_penerimaan').value = tanggal_penerimaan;
 
             // Atur action form untuk mengarah ke rute update

@@ -13,7 +13,7 @@ class Asset extends Model
     protected $fillable = [
         'id_aset',
         'name',
-        'jenis_aset',
+        'category',
         'tanggal_penerimaan',
         'gambar_aset',
     ];

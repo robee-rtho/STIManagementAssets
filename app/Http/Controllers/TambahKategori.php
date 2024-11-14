@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 
@@ -39,16 +40,25 @@ class TambahKategori extends Controller
 
     public function destroy($category)
     {
-        // Hapus kategori
         $categoryToDelete = Kategori::where('name', $category)->first();
 
         if ($categoryToDelete) {
+            // Hapus gambar yang terkait dengan aset
+            foreach ($categoryToDelete->assets as $asset) {
+                if ($asset->gambar_aset && file_exists(storage_path('app/public/' . $asset->gambar_aset))) {
+                    unlink(storage_path('app/public/' . $asset->gambar_aset));  // Menghapus file gambar
+                }
+            }
+
+            // Hapus aset yang terkait dengan kategori
+            $categoryToDelete->assets()->delete();  // Menghapus aset terkait
+
+            // Setelah itu, hapus kategori
             $categoryToDelete->delete();
-            return redirect()->route('kategori')->with('success', 'Kategori berhasil dihapus.');
+
+            return redirect()->route('kategori')->with('success', 'Kategori dan aset terkait berhasil dihapus.');
         }
 
         return redirect()->route('kategori')->withErrors(['msg' => 'Kategori tidak ditemukan.']);
     }
-
-
 }

@@ -9,13 +9,16 @@ class Kategori extends Model
 {
     use HasFactory;
 
-    // Tentukan nama tabel jika tidak sesuai dengan konvensi
     protected $table = 'kategori';
 
-    // Tentukan kolom yang dapat diisi secara massal
     protected $fillable = [
         'name',
     ];
+
+    public function assets()
+{
+    return $this->hasMany(Asset::class, 'category', 'name');  // Asumsi 'category' adalah kolom pada table 'assets' yang menyimpan nama kategori
+}
 
     // Jika Anda ingin mengatur waktu untuk timestamps (created_at dan updated_at)
     public $timestamps = true;

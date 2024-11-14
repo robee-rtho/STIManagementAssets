@@ -58,17 +58,36 @@
         </div>
         @endif
 
-        <!-- Form untuk Menambah Kategori -->
-        <form method="POST" action="{{ route('kategori.store') }}" class="mb-4" enctype="multipart/form-data">
-            @csrf
-            <div class="flex items-center">
-                <input type="text" name="name" placeholder="Nama Kategori" required class="border rounded-lg px-4 py-2 mr-2">
-                <input type="file" name="icon" accept="image/*" class="border rounded-lg px-4 py-2 mr-2">
-                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Tambah Kategori</button>
-            </div>
-        </form>
+        <!-- Button untuk membuka modal -->
+        <button onclick="openModal()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Tambah Kategori</button>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <!-- PopUp Modal untuk tambah kategori -->
+        <div id="addCategoryModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 z-50 hidden">
+            <div class="flex items-center justify-center h-full">
+                <div class="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-1/3">
+                    <h2 class="text-xl font-bold mb-4">Tambah Kategori</h2>
+
+                    <form method="POST" action="{{ route('kategori.store') }}" enctype="multipart/form-data">
+                        @csrf
+                        <div class="mb-4">
+                            <label for="name" class="block text-gray-700">Nama Kategori</label>
+                            <input type="text" name="name" id="name" placeholder="Nama Kategori" required class="w-full px-4 py-2 border rounded-lg">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="icon" class="block text-gray-700">Ikon Kategori (optional)</label>
+                            <input type="file" name="icon" id="icon" accept="image/*" class="w-full px-4 py-2 border rounded-lg">
+                        </div>
+
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Tambah Kategori</button>
+                        <button type="button" class="bg-red-500 text-white px-4 py-2 rounded-lg" onclick="closeModal()">Batal</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daftar Kategori -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
             @foreach ($categories as $category)
             <div class="bg-white rounded-lg shadow p-4 text-center hover:shadow-lg transition relative">
                 <!-- Menambahkan elemen untuk menampilkan ikon -->
@@ -87,6 +106,19 @@
             @endforeach
         </div>
     </div>
+
+    <!-- Script untuk membuka dan menutup modal -->
+    <script>
+        // Menampilkan modal
+        function openModal() {
+            document.getElementById('addCategoryModal').classList.remove('hidden');
+        }
+
+        // Menutup modal
+        function closeModal() {
+            document.getElementById('addCategoryModal').classList.add('hidden');
+        }
+    </script>
 
 </body>
 

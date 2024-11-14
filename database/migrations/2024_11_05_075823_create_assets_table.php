@@ -15,10 +15,12 @@ return new class extends Migration
             $table->id();
             $table->string('id_aset')->unique(); // ID Aset yang unik
             $table->string('name'); // Nama aset
-            $table->string('jenis_aset');
+            $table->foreignId('category');
+            $table->date('tanggal_penerimaan');
             $table->string('gambar_aset')->nullable(); // Gambar aset
             $table->timestamps();
         });
+        
     }
 
     /**
