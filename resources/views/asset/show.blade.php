@@ -1,4 +1,3 @@
-<!-- resources/views/asset/show.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -13,7 +12,7 @@
 
     <!-- Header -->
     <header class="bg-custom-color-main shadow p-4 flex justify-between items-center">
-        <div class="flex items-center ">
+        <div class="flex items-center">
             <img src="{{ asset('images/logo-pln.png') }}" alt="Logo" class="h-18 w-12 mr-2">
             <h1 class="text-xl font-bold mr-4">Aset {{ ucfirst($category) }}</h1>
             <nav class="flex space-x-4">
@@ -27,7 +26,6 @@
     </header>
 
     <!-- Konten Utama -->
-
     <div class="container mx-auto mt-4 p-4">
         <h1 class="text-2xl font-bold">Detail Aset: {{ $asset->name }}</h1>
         <br>
@@ -47,6 +45,15 @@
             <p><strong>Gambar Aset:</strong></p>
             <img src="{{ asset('storage/' . $asset->gambar_aset) }}" alt="{{ $asset->name }}" class="w-48 h-48">
             @endif
+
+            <!-- Menampilkan QR Code -->
+            @if($asset->qr_code)
+                <p><strong>QR Code untuk Aset:</strong></p>
+                <img src="{{ asset('storage/' . $asset->qr_code) }}" alt="QR Code untuk {{ $asset->id_aset }}" class="w-32 h-32">
+            @else
+                <p><strong>QR Code belum dihasilkan.</strong></p>
+            @endif
+
         </div>
 
         <div class="mt-4 mt-4 flex space-x-2">
@@ -60,6 +67,14 @@
                 <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:underline">Hapus Aset</button>
             </form>
         </div>
+
+        <!-- Tombol untuk Generate QR Code -->
+        @if(!$asset->qr_code) <!-- Hanya tampilkan tombol jika QR Code belum ada -->
+        <form action="{{ route('generate.qr', $asset->id) }}" method="POST" class="mt-4">
+            @csrf
+            <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg">Generate QR Code</button>
+        </form>
+        @endif
     </div>
 
     <!-- PopUp Edit Aset -->
@@ -110,8 +125,6 @@
             // Tampilkan modal
             document.getElementById('editAssetModal').classList.remove('hidden');
         }
-
-
 
         function closeModal() {
             document.getElementById('editAssetModal').classList.add('hidden');

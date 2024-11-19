@@ -4,8 +4,9 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\riwayat;
+use App\Models\Riwayat;
 use App\Models\Asset;
+
 
 class KategoriController extends Controller
 {

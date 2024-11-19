@@ -70,7 +70,7 @@
                         <td class="py-2 px-4 border">{{ $asset->name }}</td>
                         <td class="py-2 px-4 border">{{ $asset->created_at }}</td>
                         <td class="py-2 px-4 border">
-                            <a href="{{ route('asset.show', $asset['id']) }}" class="text-blue-500 hover:underline ">Edit</a>
+                            <a href="{{ route('asset.show', $asset['id']) }}" class="text-blue-500 hover:underline">Edit</a>
                         </td>
                     </tr>
                     @endforeach

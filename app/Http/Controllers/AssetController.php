@@ -6,10 +6,12 @@ use App\Models\Asset;
 use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
+
 
 class AssetController extends Controller
 {
-        
+
     public function show($id)
     {
         // Ambil data aset dari database berdasarkan id
@@ -53,8 +55,19 @@ class AssetController extends Controller
         $asset->save();
 
         // Redirect atau kembali dengan pesan sukses
-        return redirect()->route('asset.show', $asset->id)->with('success', 'Aset berhasil diperbarui!');
+        return redirect()->route('assets.show', ['id' => $asset->id])->with('success', 'Aset berhasil diperbarui!');
     }
+
+    public function generateQRCode($id)
+{
+    $asset = Asset::findOrFail($id);
+    $url = route('asset.show', ['id' => $id]);
+
+    // Generate the QR code image
+    $qrCode = QrCode::size(300)->generate($url);
+
+    return view('asset.show', compact('qrCode'));
+}
 
 
     // Hapus Asset
