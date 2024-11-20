@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\RiwayatController;
+Use App\Http\Controllers\TambahKategori;
 
 // Route::get('/', function () {
 //     return view('login');
@@ -18,7 +19,9 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::group(['middleware' => ['auth']], function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    Route::get('/kategori', [KategoriController::class, 'index'])->name('kategori');
+    Route::get('/kategori', [TambahKategori::class, 'index'])->name('kategori');
+    Route::post('/kategori', [TambahKategori::class, 'store'])->name('kategori.store'); // Untuk menambah kategori
+    Route::delete('/kategori/{category}', [TambahKategori::class, 'destroy'])->name('kategori.destroy'); // Untuk menghapus kategori
     Route::get('/kategori/{category}', [KategoriController::class, 'show'])->name('category.show');
     Route::post('/kategori/{category}/store', [KategoriController::class, 'store'])->name('asset.store');
     Route::get('/riwayat', [RiwayatController::class, 'index'])->name('riwayat');
@@ -27,4 +30,6 @@ Route::group(['middleware' => ['auth']], function () {
     Route::get('asset/{id}/edit', [AssetController::class, 'edit'])->name('asset.edit');
     Route::put('/asset/{id}', [AssetController::class, 'update'])->name('asset.update');
     Route::delete('/asset/{id}', [AssetController::class, 'destroy'])->name('asset.destroy');
+    Route::post('/asset/{id}/generate-qr', [AssetController::class, 'generateQRCode'])->name('generate.qr');
+
 });

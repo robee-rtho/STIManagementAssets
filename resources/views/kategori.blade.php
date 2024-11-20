@@ -39,45 +39,86 @@
 
     <!-- Main Content -->
     <div class="container mx-auto mt-4 p-4">
-        <h2 class="text-2xl font-bold mr-4 mb-2">Kategori Asset</h2>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-            <!-- Kategori Aset 1 -->
-            <a href="{{ route('category.show', ['category' => 'kategori1']) }}" class="bg-white rounded-lg shadow p-4 text-center hover:shadow-lg transition">
-                <img src="{{ asset('images/logo-kategori1.png') }}" alt="Kategori 1" class="h-24 w-24 mx-auto mb-2">
-                <h3 class="text-lg font-bold">Kategori 1</h3>
-            </a>
+        <h2 class="text-2xl font-bold mr-4 mb-2">Kategori Aset</h2>
 
-            <!-- Kategori Aset 2 -->
-            <a href="{{ route('category.show', ['category' => 'kategori2']) }}" class="bg-white rounded-lg shadow p-4 text-center hover:shadow-lg transition">
-                <img src="{{ asset('images/logo-kategori2.png') }}" alt="Kategori 2" class="h-24 w-24 mx-auto mb-2">
-                <h3 class="text-lg font-bold">Kategori 2</h3>
-            </a>
+        <!-- Pesan Sukses atau Kesalahan -->
+        @if (session('success'))
+        <div class="mb-4 text-green-500">
+            {{ session('success') }}
+        </div>
+        @endif
 
-            <!-- Kategori Aset 3 -->
-            <a href="{{ route('category.show', ['category' => 'kategori3']) }}" class="bg-white rounded-lg shadow p-4 text-center hover:shadow-lg transition">
-                <img src="{{ asset('images/logo-kategori3.png') }}" alt="Kategori 3" class="h-24 w-24 mx-auto mb-2">
-                <h3 class="text-lg font-bold">Kategori 3</h3>
-            </a>
+        @if ($errors->any())
+        <div class="mb-4 text-red-500">
+            <ul>
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
 
-            <!-- Kategori Aset 4 -->
-            <a href="{{ route('category.show', ['category' => 'kategori4']) }}" class="bg-white rounded-lg shadow p-4 text-center hover:shadow-lg transition">
-                <img src="{{ asset('images/logo-kategori4.png') }}" alt="Kategori 4" class="h-24 w-24 mx-auto mb-2">
-                <h3 class="text-lg font-bold">Kategori 4</h3>
-            </a>
+        <!-- Button untuk membuka modal -->
+        <button onclick="openModal()" class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">Tambah Kategori</button>
 
-            <!-- Kategori Aset 5 -->
-            <a href="{{ route('category.show', ['category' => 'kategori5']) }}" class="bg-white rounded-lg shadow p-4 text-center hover:shadow-lg transition">
-                <img src="{{ asset('images/logo-kategori5.png') }}" alt="Kategori 5" class="h-24 w-24 mx-auto mb-2">
-                <h3 class="text-lg font-bold">Kategori 5</h3>
-            </a>
+        <!-- PopUp Modal untuk tambah kategori -->
+        <div id="addCategoryModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 z-50 hidden">
+            <div class="flex items-center justify-center h-full">
+                <div class="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-1/3">
+                    <h2 class="text-xl font-bold mb-4">Tambah Kategori</h2>
 
-            <!-- Kategori Aset 6 -->
-            <a href="{{ route('category.show', ['category' => 'kategori6']) }}" class="bg-white rounded-lg shadow p-4 text-center hover:shadow-lg transition">
-                <img src="{{ asset('images/logo-kategori6.png') }}" alt="Kategori 6" class="h-24 w-24 mx-auto mb-2">
-                <h3 class="text-lg font-bold">Kategori 6</h3>
-            </a>
+                    <form method="POST" action="{{ route('kategori.store') }}" enctype="multipart/form-data">
+                        @csrf
+                        <div class="mb-4">
+                            <label for="name" class="block text-gray-700">Nama Kategori</label>
+                            <input type="text" name="name" id="name" placeholder="Nama Kategori" required class="w-full px-4 py-2 border rounded-lg">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="icon" class="block text-gray-700">Ikon Kategori (optional)</label>
+                            <input type="file" name="icon" id="icon" accept="image/*" class="w-full px-4 py-2 border rounded-lg">
+                        </div>
+
+                        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Tambah Kategori</button>
+                        <button type="button" class="bg-red-500 text-white px-4 py-2 rounded-lg" onclick="closeModal()">Batal</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- Daftar Kategori -->
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+            @foreach ($categories as $category)
+            <div class="bg-white rounded-lg shadow p-4 text-center hover:shadow-lg transition relative">
+                <!-- Menambahkan elemen untuk menampilkan ikon -->
+                <img src="{{ asset('storage/' . $category->icon) }}" alt="{{ $category->name }} Icon" class="h-16 w-16 mx-auto mb-2">
+
+                <h3 class="text-lg font-bold">
+                    <a href="{{ route('category.show', ['category' => $category->name]) }}" class="text-blue-500 hover:underline">{{ $category->name }}</a>
+                </h3>
+
+                <form method="POST" action="{{ route('kategori.destroy', $category->name) }}" class="absolute top-2 right-2">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="text-red-500 hover:text-red-600">Hapus</button>
+                </form>
+            </div>
+            @endforeach
         </div>
     </div>
+
+    <!-- Script untuk membuka dan menutup modal -->
+    <script>
+        // Menampilkan modal
+        function openModal() {
+            document.getElementById('addCategoryModal').classList.remove('hidden');
+        }
+
+        // Menutup modal
+        function closeModal() {
+            document.getElementById('addCategoryModal').classList.add('hidden');
+        }
+    </script>
 
 </body>
 

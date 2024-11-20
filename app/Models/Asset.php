@@ -8,4 +8,18 @@ use Illuminate\Database\Eloquent\Model;
 class Asset extends Model
 {
     use HasFactory;
+
+    // Tentukan kolom yang dapat diisi secara massal
+    protected $fillable = [
+        'id_aset',
+        'name',
+        'category',
+        'tanggal_penerimaan',
+        'gambar_aset',
+    ];
+
+    public function kategori()
+    {
+        return $this->belongsTo(Kategori::class, 'name', 'name');
+    }
 }

@@ -4,17 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use App\Models\riwayat;
+use App\Models\Riwayat;
 use App\Models\Asset;
+
 
 class KategoriController extends Controller
 {
-    public function index()
-    {
-        // Mengembalikan tampilan kategori
-        return view('kategori');
-    }
-
     public function show($category)
     {
         // Ambil aset berdasarkan kategori dari database menggunakan model Asset
@@ -28,20 +23,24 @@ class KategoriController extends Controller
     {
         // Validasi input
         $request->validate([
-            'id_aset' => 'required',
             'name' => 'required|string|max:255',
-            'jenis_aset' => 'required|string|max:255',
-            'tanggal_penerimaan' => 'required|date',
-            'gambar_aset' => 'nullable|image|max:2048',
+            'gambar_aset' => 'nullable|image|mimes:jpg,png,jpeg|max:2048', // Maks 2MB dan format JPG/JPEG
         ]);
+
+        // Dapatkan kategori berdasarkan parameter yang diklik
+        $kategori = strtoupper($category);
+
+        // Pembuatan ID Aset seperti dijelaskan sebelumnya...
+        $latestAsset = Asset::where('id_aset', 'like', "{$kategori}-%")->latest('id_aset')->first();
+        $newNumber = $latestAsset ? intval(substr($latestAsset->id_aset, strlen($kategori) + 1)) + 1 : 1;
+        $newIdAset = $kategori . '-' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
 
         // Simpan data aset
         $asset = new Asset();
-        $asset->id_aset = $request->id_aset;
+        $asset->id_aset = $newIdAset;
         $asset->name = $request->name;
         $asset->category = $category;
-        $asset->jenis_aset = $request->jenis_aset;
-        $asset->tanggal_penerimaan = $request->tanggal_penerimaan;
+        $asset->tanggal_penerimaan = now();
 
         // Simpan gambar jika ada
         if ($request->hasFile('gambar_aset')) {
@@ -53,7 +52,7 @@ class KategoriController extends Controller
 
         $asset->save();
 
-        //Simpan riwayat
+        // Simpan riwayat
         $riwayat = new Riwayat();
         $riwayat->asset_id = $asset->id;
         $riwayat->admin = Auth::user()->name;
@@ -61,7 +60,6 @@ class KategoriController extends Controller
         $riwayat->keterangan = 'Aset baru ditambahkan';
         $riwayat->save();
 
-        // Redirect ke halaman yang sesuai
         return redirect()->route('category.show', $category)->with('success', 'Aset berhasil ditambahkan.');
     }
 }

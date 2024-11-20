@@ -3,44 +3,41 @@
 namespace App\Http\Controllers;
 
 use App\Models\Asset;
+use App\Models\Kategori;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
 
 class AssetController extends Controller
 {
+
     public function show($id)
     {
         // Ambil data aset dari database berdasarkan id
         $asset = Asset::findOrFail($id); // Error jika id tidak ditemukan
 
         // Mengambil kategori dari aset
-        $category = $asset->category;
-
+        $category = $asset->kategori;
 
         // Kembalikan view untuk detail barang
         return view('asset.show', compact('asset', 'category'));
     }
 
+    // Update Asset
     public function update(Request $request, $id)
     {
         // Validasi input
         $request->validate([
-            'nama_barang' => 'required|string|max:255',
-            'jenis_aset' => 'required|string|max:255',
-            'tanggal_penerimaan' => 'required|date',
+            'name' => 'required|string|max:255',
             'gambar_aset' => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // Jika gambar diupload
         ]);
 
         // Ambil data aset dari database
         $asset = Asset::findOrFail($id); // Error jika id tidak ditemukan
 
-
-
         // Update data aset
-        $asset->name = $request->nama_barang;
-        $asset->jenis_aset = $request->jenis_aset;
-        $asset->tanggal_penerimaan = $request->tanggal_penerimaan;
+        $asset->name = $request->name;
 
         // Jika ada gambar baru, simpan dan update field gambar_aset
         if ($request->hasFile('gambar_aset')) {
@@ -54,14 +51,28 @@ class AssetController extends Controller
             $asset->gambar_aset = $path; // Simpan path langsung tanpa perlu str_replace
         }
 
-
         // Simpan perubahan ke database
         $asset->save();
 
         // Redirect atau kembali dengan pesan sukses
-        return redirect()->route('asset.show', $asset->id)->with('success', 'Aset berhasil diperbarui!');
+        return redirect()->route('assets.show', ['id' => $asset->id])->with('success', 'Aset berhasil diperbarui!');
     }
 
+    public function generateQRCode($id)
+    {
+        $link = route('asset.show', ['id' => $id]);
+
+        $qrCodeSVG = \QrCode::format('svg')->size(100)->generate($link);
+
+        
+        $path = public_path('qrcodes/' . $id . '.svg');
+        file_put_contents($path, $qrCodeSVG);
+
+        return back()->with('success', 'QR Code berhasil di-generate dan disimpan.');
+    }
+
+
+    // Hapus Asset
     public function destroy($id)
     {
         // Ambil data aset berdasarkan ID
@@ -78,5 +89,4 @@ class AssetController extends Controller
         // Redirect ke halaman daftar aset dengan pesan sukses
         return redirect()->route('kategori')->with('success', 'Aset berhasil dihapus.');
     }
-
 }
