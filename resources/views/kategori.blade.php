@@ -66,17 +66,24 @@
             <div class="flex items-center justify-center h-full">
                 <div class="bg-white rounded-lg shadow-lg p-6 w-11/12 md:w-1/3">
                     <h2 class="text-xl font-bold mb-4">Tambah Kategori</h2>
+                    <div id="error-message" class="text-red-500 text-center mb-4 hidden">Data tidak boleh kosong</div>
 
-                    <form method="POST" action="{{ route('kategori.store') }}" enctype="multipart/form-data">
+                    <form method="POST" action="{{ route('kategori.store') }}" enctype="multipart/form-data" onsubmit="return validateForm()">
                         @csrf
                         <div class="mb-4">
-                            <label for="name" class="block text-gray-700">Nama Kategori</label>
-                            <input type="text" name="name" id="name" placeholder="Nama Kategori" required class="w-full px-4 py-2 border rounded-lg">
+                            <label for="name" class="block text-gray-700">Nama Kategori (maksimal 255 karakter)</label>
+                            <input type="text" name="name" id="name" maxlength="255" class="w-full px-4 py-2 border rounded-lg" placeholder="Masukkan nama Kategori">
+                            @error('name')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <div class="mb-4">
-                            <label for="icon" class="block text-gray-700">Ikon Kategori (optional)</label>
+                            <label for="icon" class="block text-gray-700">Ikon Kategori (JPEG/JPG/PNG, maksimal 2MB)</label>
                             <input type="file" name="icon" id="icon" accept="image/*" class="w-full px-4 py-2 border rounded-lg">
+                            @error('icon')
+                            <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                            @enderror
                         </div>
 
                         <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Tambah Kategori</button>
@@ -109,6 +116,50 @@
 
     <!-- Script untuk membuka dan menutup modal -->
     <script>
+        function validateForm() {
+            // Mengambil nilai dari input nama barang dan gambar
+            const name = document.getElementById('name').value.trim();
+            const imageInput = document.getElementById('icon');
+            const errorMessage = document.getElementById('error-message');
+
+            // Validasi: Pastikan nama barang tidak kosong
+            if (!name) {
+                errorMessage.textContent = "Nama barang tidak boleh kosong.";
+                errorMessage.classList.remove('hidden');
+                return false;
+            }
+
+            // Validasi ukuran file dan format gambar jika ada gambar yang diunggah
+            if (imageInput.files.length > 0) {
+                const file = imageInput.files[0];
+                const fileSizeMB = file.size / 1024 / 1024; // Convert ukuran ke MB
+                const fileExtension = file.name.split('.').pop().toLowerCase();
+
+                // Cek ukuran file
+                if (fileSizeMB > 2) {
+                    errorMessage.textContent = "Ukuran gambar tidak boleh lebih dari 2MB.";
+                    errorMessage.classList.remove('hidden');
+                    return false;
+                }
+
+                // Cek format file
+                if (fileExtension !== 'jpg' && fileExtension !== 'jpeg' && fileExtension !== 'png') {
+                    errorMessage.textContent = "Format gambar harus JPG atau JPEG atau PNG.";
+                    errorMessage.classList.remove('hidden');
+                    return false;
+                }
+            } else {
+                errorMessage.textContent = "Gambar aset tidak boleh kosong.";
+                errorMessage.classList.remove('hidden');
+                return false;
+            }
+
+            // Jika semua validasi lolos, sembunyikan pesan error dan lanjutkan submit
+            errorMessage.classList.add('hidden');
+            return true;
+        }
+
+
         // Menampilkan modal
         function openModal() {
             document.getElementById('addCategoryModal').classList.remove('hidden');

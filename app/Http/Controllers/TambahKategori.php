@@ -19,7 +19,7 @@ class TambahKategori extends Controller
         // Validasi input
         $request->validate([
             'name' => 'required|string|max:255|unique:kategori',
-            'icon' => 'nullable|image|max:2048', // Validasi kategori unik
+            'icon' => 'nullable|image|mimes:jpg,png,jpeg|max:2048', 
         ]);
 
         //Simpan Kategori Baru

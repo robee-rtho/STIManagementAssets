@@ -56,7 +56,9 @@
         const ctx = document.getElementById('assetChart').getContext('2d');
 
         // Data dari controller
-        
+        const labels = @json($labels); // Nama kategori
+        const dataValues = @json($dataValues); // Jumlah aset per kategori
+
         const assetChart = new Chart(ctx, {
             type: 'bar',
             data: {
@@ -77,8 +79,6 @@
                 }
             }
         });
-
-        
     </script>
 </body>
 
