@@ -59,15 +59,17 @@ class AssetController extends Controller
     }
 
     public function generateQRCode($id)
-{
-    $asset = Asset::findOrFail($id);
-    $url = route('asset.show', ['id' => $id]);
+    {
+        $link = route('asset.show', ['id' => $id]);
 
-    // Generate the QR code image
-    $qrCode = QrCode::size(300)->generate($url);
+        $qrCodeSVG = \QrCode::format('svg')->size(100)->generate($link);
 
-    return view('asset.show', compact('qrCode'));
-}
+        
+        $path = public_path('qrcodes/' . $id . '.svg');
+        file_put_contents($path, $qrCodeSVG);
+
+        return back()->with('success', 'QR Code berhasil di-generate dan disimpan.');
+    }
 
 
     // Hapus Asset
