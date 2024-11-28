@@ -60,9 +60,52 @@
                         <th class="py-2 px-4 border">ID Barang</th>
                         <th class="py-2 px-4 border">Nama Barang</th>
                         <th class="py-2 px-4 border">Tanggal</th>
+                        <th class="py-2 px-4 border relative">
+                            <div class="inline-block">
+                                <button onclick="toggleDropdown()" class="font-semibold focus:outline-none">
+                                    Status <span>&#9662;</span>
+                                </button>
+                                <!-- Dropdown -->
+                                <div id="dropdown-status" class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg hidden">
+                                    <ul>
+                                        <li>
+                                            <a href="{{ route('category.show', ['category' => $category]) }}"
+                                                class="block px-4 py-2 text-gray-700 hover:bg-gray-200">
+                                                Semua Status
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ route('category.show', ['category' => $category, 'status' => 'Tersedia']) }}"
+                                                class="block px-4 py-2 text-gray-700 hover:bg-gray-200">
+                                                Tersedia
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ route('category.show', ['category' => $category, 'status' => 'Sedang Dipinjam']) }}"
+                                                class="block px-4 py-2 text-gray-700 hover:bg-gray-200">
+                                                Sedang Dipinjam
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ route('category.show', ['category' => $category, 'status' => 'Rusak']) }}"
+                                                class="block px-4 py-2 text-gray-700 hover:bg-gray-200">
+                                                Rusak
+                                            </a>
+                                        </li>
+                                        <li>
+                                            <a href="{{ route('category.show', ['category' => $category, 'status' => 'Sudah Tidak Ada']) }}"
+                                                class="block px-4 py-2 text-gray-700 hover:bg-gray-200">
+                                                Sudah Tidak Ada
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </th>
                         <th class="py-2 px-4 border">Aksi</th>
                     </tr>
                 </thead>
+
                 <tbody>
                     @foreach ($assets as $asset)
                     <tr>
@@ -70,12 +113,28 @@
                         <td class="py-2 px-4 border">{{ $asset->name }}</td>
                         <td class="py-2 px-4 border">{{ $asset->created_at }}</td>
                         <td class="py-2 px-4 border">
-                            <a href="{{ route('asset.show', $asset['id']) }}" class="text-blue-500 hover:underline">Edit</a>
+                            @php
+                            $color = match($asset->status) {
+                            'Tersedia' => 'text-green-500',
+                            'Sedang Dipinjam' => 'text-orange-500',
+                            'Rusak' => 'text-red-500',
+                            'Sudah Tidak Ada' => 'text-gray-500',
+                            default => 'text-black'
+                            };
+                            @endphp
+                            <span class="{{ $color }}">{{ $asset->status }}</span>
+                        </td>
+                        <td class="py-2 px-4 border">
+                            <a href="{{ route('asset.show', $asset->id) }}" class="text-blue-500 hover:underline">Edit</a>
                         </td>
                     </tr>
                     @endforeach
                 </tbody>
             </table>
+        </div>
+
+        <div class="mt-4">
+            {{ $assets->links() }}
         </div>
     </div>
 
@@ -161,6 +220,20 @@
             errorMessage.classList.add('hidden');
             return true;
         }
+
+        function toggleDropdown() {
+            const dropdown = document.getElementById('dropdown-status');
+            dropdown.classList.toggle('hidden');
+        }
+
+        // Menutup dropdown saat klik di luar
+        window.addEventListener('click', function(e) {
+            const dropdown = document.getElementById('dropdown-status');
+            const button = dropdown.previousElementSibling;
+            if (!button.contains(e.target) && !dropdown.contains(e.target)) {
+                dropdown.classList.add('hidden');
+            }
+        });
 
         function openModal() {
             document.getElementById('modal').classList.remove('hidden');

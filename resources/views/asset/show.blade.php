@@ -27,7 +27,6 @@
 
 
     <!-- Konten Utama -->
-    <!-- Konten Utama -->
     <div class="container mx-auto mt-4 p-4 px-4">
         <h1 class="text-2xl font-bold">Detail Aset: {{ $asset->name }}</h1>
         <br>
@@ -54,6 +53,21 @@
                 </div>
                 <p class="font-semibold text-lg">Kategori:</p>
                 <p>{{ $asset->category }}</p>
+
+                <div class="mt-4">
+                    <label for="status" class="block font-bold text-gray-700">Status Aset:</label>
+                    <form action="{{ route('asset.updateStatus', $asset->id) }}" method="POST" class="inline-block">
+                        @csrf
+                        @method('PUT')
+                        <select name="status" id="status" class="border rounded-lg px-4 py-2" onchange="this.form.submit()">
+                            <option value="Tersedia" {{ $asset->status == 'Tersedia' ? 'selected' : '' }}>Tersedia</option>
+                            <option value="Sedang Dipinjam" {{ $asset->status == 'Sedang Dipinjam' ? 'selected' : '' }}>Sedang Dipinjam</option>
+                            <option value="Rusak" {{ $asset->status == 'Rusak' ? 'selected' : '' }}>Rusak</option>
+                            <option value="Sudah Tidak Ada" {{ $asset->status == 'Sudah Tidak Ada' ? 'selected' : '' }}>Sudah Tidak Ada</option>
+                        </select>
+                    </form>
+                </div>
+                
 
                 <div class="flex space-x-2 mt-4">
                     <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:underline"
@@ -101,6 +115,7 @@
             </div>
         </div>
     </div>
+
 
     <!-- PopUp Edit Aset -->
     <div id="editAssetModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 z-50 hidden">

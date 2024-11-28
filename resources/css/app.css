@@ -11,3 +11,4 @@
 .login-page .card {
     @apply bg-custom-color-card bg-opacity-80 backdrop-blur-lg shadow-lg rounded-3xl p-8 max-w-md w-full;
 }
+

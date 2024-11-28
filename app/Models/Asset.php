@@ -16,6 +16,7 @@ class Asset extends Model
         'category',
         'tanggal_penerimaan',
         'gambar_aset',
+        'status',
     ];
 
     public function kategori()

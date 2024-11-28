@@ -31,5 +31,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::put('/asset/{id}', [AssetController::class, 'update'])->name('asset.update');
     Route::delete('/asset/{id}', [AssetController::class, 'destroy'])->name('asset.destroy');
     Route::post('/asset/{id}/generate-qr', [AssetController::class, 'generateQRCode'])->name('generate.qr');
+    Route::put('/asset/{id}/update-status', [AssetController::class, 'updateStatus'])->name('asset.updateStatus');
+
 
 });
