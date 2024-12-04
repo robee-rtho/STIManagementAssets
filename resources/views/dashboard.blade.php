@@ -40,12 +40,43 @@
         </div>
     </header>
 
+
+
+
     <!-- Main Content -->
     <div class="container mx-auto mt-4 p-4">
+
+        <!-- Menampilkan kotak status aset -->
+        <div class="flex space-x-4 mb-6">
+            <!-- Kotak Teks Status Aset -->
+            <div class="bg-white w-full md:w-1/2 rounded-lg shadow p-4">
+                <h2 class="text-lg font-bold mb-2">Status Aset per Kategori</h2>
+                <select id="categorySelect" class="form-select">
+                    <option value="">Pilih Kategori</option>
+                    @foreach($labels as $category)
+                    <option value="{{ $category}}">{{ $category}}</option>
+                    @endforeach
+                </select>
+
+                <div id="statusInfo" class="hidden mt-6">
+                    <p><strong>Tersedia:</strong> <span id="tersedia">0</span></p>
+                    <p><strong>Sedang Dipinjam:</strong> <span id="sedangDipinjam">0</span></p>
+                    <p><strong>Rusak:</strong> <span id="rusak">0</span></p>
+                    <p><strong>Sudah Tidak Ada:</strong> <span id="sudahTidakAda">0</span></p>
+                </div>
+            </div>
+
+            <!-- Kotak Chart Pie -->
+            <div class="bg-white w-full md:w-1/2 rounded-lg shadow p-4">
+                <h2 class="text-lg font-bold mb-2">Status Aset per Kategori (Pie Chart)</h2>
+                <canvas id="statusPieChart" style="max-height: 200px;" ></canvas>
+            </div>
+        </div>
+
         <!-- Chart Jumlah Asset -->
         <div class="bg-white rounded-lg shadow p-4">
             <h2 class="text-lg font-bold mb-2">Jumlah Aset</h2>
-            <canvas id="assetChart"></canvas>
+            <canvas id="assetChart" style="max-height: 300px;"></canvas>
         </div>
 
     </div>
@@ -78,6 +109,60 @@
                     }
                 }
             }
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusCounts = @json($statusCounts); // Data status berdasarkan kategori
+
+            const categorySelect = document.getElementById('categorySelect');
+            const statusInfo = document.getElementById('statusInfo');
+
+            const tersedia = document.getElementById('tersedia');
+            const sedangDipinjam = document.getElementById('sedangDipinjam');
+            const rusak = document.getElementById('rusak');
+            const sudahTidakAda = document.getElementById('sudahTidakAda');
+
+            const ctx = document.getElementById('statusPieChart').getContext('2d');
+            let statusPieChart;
+
+            categorySelect.addEventListener('change', function() {
+                const selectedCategory = this.value;
+
+                if (statusCounts[selectedCategory]) {
+                    statusInfo.classList.remove('hidden');
+                    tersedia.textContent = statusCounts[selectedCategory].tersedia;
+                    sedangDipinjam.textContent = statusCounts[selectedCategory].sedang_dipinjam;
+                    rusak.textContent = statusCounts[selectedCategory].rusak;
+                    sudahTidakAda.textContent = statusCounts[selectedCategory].sudah_tidak_ada;
+
+                    // Update Chart
+                    const statusData = [
+                        statusCounts[selectedCategory].tersedia,
+                        statusCounts[selectedCategory].sedang_dipinjam,
+                        statusCounts[selectedCategory].rusak,
+                        statusCounts[selectedCategory].sudah_tidak_ada
+                    ];
+
+                    if (statusPieChart) {
+                        statusPieChart.destroy(); // Hapus chart lama
+                    }
+
+                    statusPieChart = new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: ['Tersedia', 'Sedang Dipinjam', 'Rusak', 'Sudah Tidak Ada'],
+                            datasets: [{
+                                data: statusData,
+                                backgroundColor: ['#4caf50', '#ff9800', '#f44336', '#9e9e9e'],
+                                hoverOffset: 4
+                            }]
+                        },
+                        options: {
+                            responsive: true
+                        }
+                    });
+                }
+            });
         });
     </script>
 </body>

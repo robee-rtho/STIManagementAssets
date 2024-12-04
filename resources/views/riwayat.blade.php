@@ -76,6 +76,9 @@
                 </tbody>
             </table>
         </div>
+        <div class="mt-4">
+            {{ $riwayat->links() }}
+        </div>
     </div>
 
     <script>
