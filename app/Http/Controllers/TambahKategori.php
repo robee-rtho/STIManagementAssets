@@ -53,7 +53,7 @@ class TambahKategori extends Controller
             // Hapus aset yang terkait dengan kategori
             $categoryToDelete->assets()->delete();  // Menghapus aset terkait
 
-            // Setelah itu, hapus kategori
+            // Hapus kategori
             $categoryToDelete->delete();
 
             return redirect()->route('kategori')->with('success', 'Kategori dan aset terkait berhasil dihapus.');

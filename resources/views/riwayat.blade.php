@@ -15,25 +15,25 @@
 <body class="bg-gray-100">
 
     <!-- Header -->
-    <header class="bg-custom-color-main shadow p-4 flex justify-between items-center">
+    <header class=" navbar p-4 flex justify-between items-center">
         <div class="flex items-center">
-            <img src="{{ asset('images/logo-pln.png') }}" alt="Logo" class="h-18 w-12 mr-2">
-            <h1 class="text-xl font-bold mr-4">
+            <img src="{{ asset('http://127.0.0.1:8000/images/logo-pln.png') }}" alt="Logo" class="h-18 w-12 mr-2">
+            <h1 class="text-xl font-bold ">
                 <a href="{{ route('dashboard') }}">Dashboard </a>
             </h1>
             <nav class="flex space-x-4">
-                <a href="{{ route('kategori') }}" class="text-gray-800 font-bold hover:text-blue-500">Kategori Aset</a>
-                <a href="#" class="text-gray-800 font-bold hover:text-blue-500">Riwayat</a>
+                <a href="{{ route('kategori') }}" class=" font-bold ">Kategori Aset</a>
+                <a href="{{ route('riwayat') }}" class=" font-bold ">Riwayat</a>
             </nav>
         </div>
-        </div>
         <div class="flex items-center relative group">
-            <span class="mr-4 text-gray-800 font-bold">Hello, {{ Auth::user()->name }}</span>
-            <button class="text-gray-800 font-bold focus:outline-none">Menu</button>
+            <span class="mr-4  font-bold">Hello, {{ Auth::user()->name }}</span>
+            <button class=" font-bold focus:outline-none">
+                Menu
+            </button>
             <!-- Dropdown Menu -->
-            <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg z-10 hidden group-hover:block">
-                <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200">Ubah Data</a>
-                <a href="#" class="block px-4 py-2 text-gray-800 hover:bg-gray-200"
+            <div class="absolute right-0 mt-2 w-48 bg-black rounded-md shadow-lg z-10 hidden group-hover:block">
+                <a href="#" class="block px-4 py-2  "
                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
                     @csrf

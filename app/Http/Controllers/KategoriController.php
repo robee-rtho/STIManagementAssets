@@ -13,11 +13,16 @@ class KategoriController extends Controller
     
     public function show($category, Request $request)
     {
-        $assets = Asset::where('category', $category)->get(); // Mengambil data dari database
-        
+        // Query untuk mendapatkan aset berdasarkan kategori
+        $query = Asset::where('category', $category);
+
+        // Jika ada filter status, tambahkan ke query
         if ($request->has('status') && $request->status != '') {
-            $assets->where('status', $request->status);
+            $query->where('status', $request->status);
         }
+
+        
+        $assets = $query->get();
 
         return view('category.show', compact('assets', 'category'));
     }

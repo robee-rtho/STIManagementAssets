@@ -9,7 +9,7 @@ class Asset extends Model
 {
     use HasFactory;
 
-    // Tentukan kolom yang dapat diisi secara massal
+    
     protected $fillable = [
         'id_aset',
         'name',

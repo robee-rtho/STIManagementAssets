@@ -11,19 +11,33 @@
 <body>
 
     <!-- Header -->
-    <header class="bg-custom-color-main shadow p-4 flex justify-between items-center">
-        <div class="flex items-center">
+    <header class=" navbar p-4 flex justify-between items-center">
+        <div class="flex items-center ">
             <img src="{{ asset('images/logo-pln.png') }}" alt="Logo" class="h-18 w-12 mr-2">
             <h1 class="text-xl font-bold mr-4">Aset {{ ucfirst($category) }}</h1>
+
             <nav class="flex space-x-4">
-                <a href="{{ route('kategori') }}" class="text-gray-800 font-bold hover:text-blue-500">Kategori</a>
+                <a href="{{ route('dashboard') }}" class=" font-bold ">Dashboard</a>
+                <a href="{{ route('kategori') }}" class=" font-bold ">Kategori Aset</a>
+                <a href="{{ route('riwayat') }}" class=" font-bold ">Riwayat</a>
             </nav>
         </div>
-        <div class="flex items-center">
-            <span class="mr-4 text-gray-800 font-bold">Hello, {{ Auth::user()->name }}</span>
-            <button class="text-gray-800 font-bold focus:outline-none">Menu</button>
+        <div class="flex items-center relative group">
+            <span class="mr-4  font-bold">Hello, {{ Auth::user()->name }}</span>
+            <button class=" font-bold focus:outline-none">
+                Menu
+            </button>
+            <!-- Dropdown Menu -->
+            <div class="absolute right-0 mt-2 w-48 bg-black rounded-md shadow-lg z-10 hidden group-hover:block">
+                <a href="#" class="block px-4 py-2  "
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+            </div>
         </div>
     </header>
+    <!-- Header -->
 
 
     <!-- Konten Utama -->
@@ -67,7 +81,7 @@
                         </select>
                     </form>
                 </div>
-                
+
 
                 <div class="flex space-x-2 mt-4">
                     <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:underline"
@@ -85,7 +99,7 @@
                 </div>
             </div>
 
-            <!-- Bagian Kanan: Gambar Aset & QR Code -->
+            <!-- Gambar Aset & QR Code -->
             <div class="flex-1 flex flex-col items-center p-6">
                 @if($asset->gambar_aset)
                 <div class="text-center mb-4">

@@ -12,7 +12,7 @@ class DashboardController extends Controller
         // Ambil kategori beserta jumlah aset per kategori
         $categories = Kategori::withCount('assets')->get();
 
-        // Siapkan data untuk chart
+        
         $labels = $categories->pluck('name'); // Ambil nama kategori
         $dataValues = $categories->pluck('assets_count'); // Ambil jumlah aset per kategori
 

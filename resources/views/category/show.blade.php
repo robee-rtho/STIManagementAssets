@@ -11,53 +11,45 @@
 </head>
 
 <body class="bg-gray-100">
+
     <!-- Header -->
-    <header class="bg-custom-color-main shadow p-4 flex justify-between items-center">
+    <header class=" navbar p-4 flex justify-between items-center">
         <div class="flex items-center ">
             <img src="{{ asset('images/logo-pln.png') }}" alt="Logo" class="h-18 w-12 mr-2">
             <h1 class="text-xl font-bold mr-4">Aset {{ ucfirst($category) }}</h1>
+
             <nav class="flex space-x-4">
-                <a href="{{ route('kategori') }}" class="text-gray-800 font-bold hover:text-blue-500">Kategori</a>
+                <a href="{{ route('dashboard') }}" class=" font-bold ">Dashboard</a>
+                <a href="{{ route('kategori') }}" class=" font-bold ">Kategori Aset</a>
+                <a href="{{ route('riwayat') }}" class=" font-bold ">Riwayat</a>
             </nav>
         </div>
-        <div class="flex items-center">
-            <span class="mr-4 text-gray-800 font-bold">Hello, {{ Auth::user()->name }}</span>
-            <button class="text-gray-800 font-bold focus:outline-none">Menu</button>
+        <div class="flex items-center relative group">
+            <span class="mr-4  font-bold">Hello, {{ Auth::user()->name }}</span>
+            <button class=" font-bold focus:outline-none">
+                Menu
+            </button>
+            <!-- Dropdown Menu -->
+            <div class="absolute right-0 mt-2 w-48 bg-black rounded-md shadow-lg z-10 hidden group-hover:block">
+                <a href="#" class="block px-4 py-2  "
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+            </div>
         </div>
     </header>
+    <!-- Header -->
+
 
     <!-- Konten Utama -->
     <div class="container mx-auto mt-4 p-4">
         <h2 class="text-xl font-bold mb-4">Daftar Aset {{ ucfirst($category) }}</h2>
 
-        <div class="flex gap-8">
-            <!-- Tombol Tambah Aset -->
-            <div class="mb-4 flex-1">
-                <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" onclick="openModal()">Tambah Aset</button>
-            </div>
-            <!-- Pencarian -->
-            <div class="mb-4 flex">
-                <input type="text" placeholder="Cari aset..." class="px-4 py-2 border rounded-lg w-full" id="search">
-            </div>
+        <!-- Tombol Tambah Aset -->
+        <div class="mb-4">
+            <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" onclick="openModal()">Tambah Aset</button>
         </div>
-
-
-
-
-        @if($assets->isEmpty())
-        <p>Tidak ada aset yang ditemukan.</p>
-        @else
-        <!-- @foreach ($assets as $asset)
-        <tr>
-            <td class="py-2 px-4 border">{{ $asset->id_aset }}</td>
-            <td class="py-2 px-4 border">{{ $asset->name }}</td>
-            <td class="py-2 px-4 border">{{ $asset->created_at }}</td>
-            <td class="py-2 px-4 border">
-                <a href="{{ route('asset.show', $asset['id']) }}" class="text-blue-500 hover:underline">Edit</a>
-            </td>
-        </tr>
-        @endforeach
-        @endif -->
 
         <!-- Tabel Daftar Aset -->
         <div class="overflow-x-auto">
@@ -71,7 +63,7 @@
                             <th data-priority="1">ID Barang</th>
                             <th data-priority="2">Nama Barang</th>
                             <th data-priority="3">Tanggal</th>
-                            <th class="py-2 px-4 border relative">
+                            <th class="py-2 px-4 relative">
                                 <div data-priority="4" class="inline-block">
                                     <button onclick="toggleDropdown()" class="font-semibold focus:outline-none">
                                         Status <span>&#9662;</span>
@@ -201,7 +193,7 @@
             const imageInput = document.getElementById('gambar_aset');
             const errorMessage = document.getElementById('error-message');
 
-            // Validasi: Pastikan nama barang tidak kosong
+            // Validasi: Nama barang tidak kosong
             if (!name) {
                 errorMessage.textContent = "Nama barang tidak boleh kosong.";
                 errorMessage.classList.remove('hidden');
@@ -233,7 +225,7 @@
                 return false;
             }
 
-            // Jika semua validasi lolos, sembunyikan pesan error dan lanjutkan submit
+            // Jika validasi lolos, sembunyikan pesan error dan lanjutkan submit
             errorMessage.classList.add('hidden');
             return true;
         }
@@ -262,17 +254,19 @@
     </script>
     <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 
-    <!--Datatables -->
+
     <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
     <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
     <script>
         $(document).ready(function() {
-
             var table = $('#example').DataTable({
-                    responsive: true
-                })
-                .columns.adjust()
-                .responsive.recalc();
+                responsive: true,
+                columnDefs: [{
+                        orderable: false,
+                        targets: 3
+                    } // Menonaktifkan sort di kolom ke-4 
+                ]
+            }).columns.adjust().responsive.recalc();
         });
     </script>
 </body>

@@ -15,7 +15,7 @@ class AssetController extends Controller
     public function show($id)
     {
         // Ambil data aset dari database berdasarkan id
-        $asset = Asset::findOrFail($id); // Error jika id tidak ditemukan
+        $asset = Asset::findOrFail($id);
 
         // Mengambil kategori dari aset
         $category = $asset->kategori;

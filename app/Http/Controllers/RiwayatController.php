@@ -11,7 +11,7 @@ class RiwayatController extends Controller
     //
     public function index()
 {
-    // Mengambil riwayat tanpa eager loading
+    // Mengambil riwayat 
     $riwayat = Riwayat::with('asset')->get(); 
 
         return view('riwayat', compact('riwayat'));

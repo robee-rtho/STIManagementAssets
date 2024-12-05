@@ -2,6 +2,37 @@
 @tailwind components;
 @tailwind utilities;
 
+
+/* Navbar Styling */
+.navbar {
+    background-color: #2C3E50; /* Dark Navy */
+    color: #ECF0F1; /* Soft White */
+    padding: 1rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+}
+
+/* Navbar Link */
+.navbar a {
+    color: #ECF0F1; /* Soft White */
+    text-decoration: none;
+    margin: 0 1rem;
+    transition: color 0.3s ease; /* Smooth hover effect */
+}
+
+/* Hover Effect */
+.navbar a:hover {
+    color: #F1C40F; /* Gold for hover */
+    text-decoration: underline;
+}
+
+/* Active Link */
+.navbar a.active {
+    color: #F1C40F; /* Gold for active link */
+    font-weight: bold;
+}
+
+
+
 .login-page {
     background-image: url("http://127.0.0.1:8000/images/background-login.png");
     background-size: cover;
