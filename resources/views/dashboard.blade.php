@@ -7,6 +7,8 @@
     <title>Dashboard</title>
     @vite('resources/css/app.css')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-gray-100">
@@ -69,7 +71,7 @@
             <!-- Kotak Chart Pie -->
             <div class="bg-white w-full md:w-1/2 rounded-lg shadow p-4">
                 <h2 class="text-lg font-bold mb-2">Status Aset per Kategori (Pie Chart)</h2>
-                <canvas id="statusPieChart" style="max-height: 200px;" ></canvas>
+                <canvas id="statusPieChart" style="max-height: 200px;"></canvas>
             </div>
         </div>
 

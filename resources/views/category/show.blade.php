@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Aset {{ ucfirst($category) }}</title>
     @vite('resources/css/app.css')
+    <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css" rel="stylesheet">
 </head>
 
 <body class="bg-gray-100">
@@ -28,15 +30,20 @@
     <div class="container mx-auto mt-4 p-4">
         <h2 class="text-xl font-bold mb-4">Daftar Aset {{ ucfirst($category) }}</h2>
 
-        <!-- Pencarian -->
-        <div class="mb-4">
-            <input type="text" placeholder="Cari aset..." class="px-4 py-2 border rounded-lg w-full" id="search">
+        <div class="flex gap-8">
+            <!-- Tombol Tambah Aset -->
+            <div class="mb-4 flex-1">
+                <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" onclick="openModal()">Tambah Aset</button>
+            </div>
+            <!-- Pencarian -->
+            <div class="mb-4 flex">
+                <input type="text" placeholder="Cari aset..." class="px-4 py-2 border rounded-lg w-full" id="search">
+            </div>
         </div>
 
-        <!-- Tombol Tambah Aset -->
-        <div class="mb-4">
-            <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600" onclick="openModal()">Tambah Aset</button>
-        </div>
+
+
+
         @if($assets->isEmpty())
         <p>Tidak ada aset yang ditemukan.</p>
         @else
@@ -54,88 +61,98 @@
 
         <!-- Tabel Daftar Aset -->
         <div class="overflow-x-auto">
-            <table class="min-w-full bg-white border">
-                <thead>
-                    <tr class="bg-gray-200">
-                        <th class="py-2 px-4 border">ID Barang</th>
-                        <th class="py-2 px-4 border">Nama Barang</th>
-                        <th class="py-2 px-4 border">Tanggal</th>
-                        <th class="py-2 px-4 border relative">
-                            <div class="inline-block">
-                                <button onclick="toggleDropdown()" class="font-semibold focus:outline-none">
-                                    Status <span>&#9662;</span>
-                                </button>
-                                <!-- Dropdown -->
-                                <div id="dropdown-status" class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg hidden">
-                                    <ul>
-                                        <li>
-                                            <a href="{{ route('category.show', ['category' => $category]) }}"
-                                                class="block px-4 py-2 text-gray-700 hover:bg-gray-200">
-                                                Semua Status
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('category.show', ['category' => $category, 'status' => 'Tersedia']) }}"
-                                                class="block px-4 py-2 text-gray-700 hover:bg-gray-200">
-                                                Tersedia
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('category.show', ['category' => $category, 'status' => 'Sedang Dipinjam']) }}"
-                                                class="block px-4 py-2 text-gray-700 hover:bg-gray-200">
-                                                Sedang Dipinjam
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('category.show', ['category' => $category, 'status' => 'Rusak']) }}"
-                                                class="block px-4 py-2 text-gray-700 hover:bg-gray-200">
-                                                Rusak
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a href="{{ route('category.show', ['category' => $category, 'status' => 'Sudah Tidak Ada']) }}"
-                                                class="block px-4 py-2 text-gray-700 hover:bg-gray-200">
-                                                Sudah Tidak Ada
-                                            </a>
-                                        </li>
-                                    </ul>
+
+            <div id='recipients' class="p-8 mt-6 lg:mt-0 rounded shadow bg-white">
+
+
+                <table id="example" class="stripe hover" style="width:100%; padding-top: 1em;  padding-bottom: 1em;">
+                    <thead>
+                        <tr>
+                            <th data-priority="1">ID Barang</th>
+                            <th data-priority="2">Nama Barang</th>
+                            <th data-priority="3">Tanggal</th>
+                            <th class="py-2 px-4 border relative">
+                                <div data-priority="4" class="inline-block">
+                                    <button onclick="toggleDropdown()" class="font-semibold focus:outline-none">
+                                        Status <span>&#9662;</span>
+                                    </button>
+                                    <!-- Dropdown -->
+                                    <div id="dropdown-status" class="absolute right-0 mt-2 w-48 bg-white border rounded shadow-lg hidden">
+                                        <ul>
+                                            <li>
+                                                <a href="{{ route('category.show', ['category' => $category]) }}"
+                                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-200">
+                                                    Semua Status
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="{{ route('category.show', ['category' => $category, 'status' => 'Tersedia']) }}"
+                                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-200">
+                                                    Tersedia
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="{{ route('category.show', ['category' => $category, 'status' => 'Sedang Dipinjam']) }}"
+                                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-200">
+                                                    Sedang Dipinjam
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="{{ route('category.show', ['category' => $category, 'status' => 'Rusak']) }}"
+                                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-200">
+                                                    Rusak
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a href="{{ route('category.show', ['category' => $category, 'status' => 'Sudah Tidak Ada']) }}"
+                                                    class="block px-4 py-2 text-gray-700 hover:bg-gray-200">
+                                                    Sudah Tidak Ada
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </div>
                                 </div>
-                            </div>
-                        </th>
-                        <th class="py-2 px-4 border">Aksi</th>
-                    </tr>
-                </thead>
+                            </th>
+                            <th data-priority="5">Aksi</th>
 
-                <tbody>
-                    @foreach ($assets as $asset)
-                    <tr>
-                        <td class="py-2 px-4 border">{{ $asset->id_aset }}</td>
-                        <td class="py-2 px-4 border">{{ $asset->name }}</td>
-                        <td class="py-2 px-4 border">{{ $asset->created_at }}</td>
-                        <td class="py-2 px-4 border">
-                            @php
-                            $color = match($asset->status) {
-                            'Tersedia' => 'text-green-500',
-                            'Sedang Dipinjam' => 'text-orange-500',
-                            'Rusak' => 'text-red-500',
-                            'Sudah Tidak Ada' => 'text-gray-500',
-                            default => 'text-black'
-                            };
-                            @endphp
-                            <span class="{{ $color }}">{{ $asset->status }}</span>
-                        </td>
-                        <td class="py-2 px-4 border">
-                            <a href="{{ route('asset.show', $asset->id) }}" class="text-blue-500 hover:underline">Edit</a>
-                        </td>
-                    </tr>
-                    @endforeach
-                </tbody>
-            </table>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($assets as $asset)
+                        <tr>
+                            <td data-priority="">{{ $asset->id_aset }}</td>
+                            <td data-priority="">{{ $asset->name }}</td>
+                            <td data-priority="">{{ $asset->created_at }}</td>
+                            <td data-priority="">
+                                @php
+                                $color = match($asset->status) {
+                                'Tersedia' => 'text-green-500',
+                                'Sedang Dipinjam' => 'text-orange-500',
+                                'Rusak' => 'text-red-500',
+                                'Sudah Tidak Ada' => 'text-gray-500',
+                                default => 'text-black'
+                                };
+                                @endphp
+                                <span class="{{ $color }}">{{ $asset->status }}</span>
+                            </td>
+                            <td data-priority=""">
+                                <a href=" {{ route('asset.show', $asset->id) }}" class="text-blue-500 hover:underline">Edit</a>
+                            </td>
+                        </tr>
+                        @endforeach
+                    </tbody>
+
+
+                </table>
+
+
+            </div>
+
         </div>
 
-        <div class="mt-4">
-            {{ $assets->links() }}
-        </div>
+
     </div>
 
     <!-- Modal untuk Tambah Aset -->
@@ -242,6 +259,21 @@
         function closeModal() {
             document.getElementById('modal').classList.add('hidden');
         }
+    </script>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+    <!--Datatables -->
+    <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+    <script>
+        $(document).ready(function() {
+
+            var table = $('#example').DataTable({
+                    responsive: true
+                })
+                .columns.adjust()
+                .responsive.recalc();
+        });
     </script>
 </body>
 
