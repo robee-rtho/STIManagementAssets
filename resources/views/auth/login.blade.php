@@ -17,6 +17,23 @@
             <h2 class="text-2xl font-bold text-gray-700">LOGIN</h2>
         </div>
 
+        @if (session('success'))
+        <div class="mb-4 text-green-500">
+            {{ session('success') }}
+        </div>
+        @endif
+
+        @if ($errors->any())
+        <div class="mb-4 text-red-500">
+            <ul>
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
+
         <!-- Form Login -->
         <form method="POST" action="{{ route('login') }}">
             @csrf

@@ -2,20 +2,34 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kategori;
 use App\Models\Asset;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 class DashboardController extends Controller
 {
     public function index()
     {
-        // Ambil jumlah aset berdasarkan kategori
-        $jumlahAsetPerKategori = Asset::select('category', DB::raw('count(*) as total'))
-            ->groupBy('category')
-            ->pluck('total', 'category');
+        // Ambil kategori beserta jumlah aset per kategori
+        $categories = Kategori::withCount('assets')->get();
 
-        return view('dashboard', compact('jumlahAsetPerKategori'));
+        
+        $labels = $categories->pluck('name'); // Ambil nama kategori
+        $dataValues = $categories->pluck('assets_count'); // Ambil jumlah aset per kategori
+
+        // Siapkan data untuk status berdasarkan kategori
+        $statusCounts = [];
+        foreach ($categories as $category) {
+            $statusCounts[$category->name] = [
+                'tersedia' => Asset::where('category', $category->name)->where('status', 'tersedia')->count(),
+                'sedang_dipinjam' => Asset::where('category', $category->name)->where('status', 'sedang dipinjam')->count(),
+                'rusak' => Asset::where('category', $category->name)->where('status', 'rusak')->count(),
+                'sudah_tidak_ada' => Asset::where('category', $category->name)->where('status', 'sudah tidak ada')->count(),
+            ];
+        }
+
+        // Kirim data ke view
+        return view('dashboard', compact('labels', 'dataValues', 'statusCounts'));
     }
+
+    
 }

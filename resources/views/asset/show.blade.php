@@ -1,4 +1,3 @@
-<!-- resources/views/asset/show.blade.php -->
 <!DOCTYPE html>
 <html lang="en">
 
@@ -12,51 +11,125 @@
 <body>
 
     <!-- Header -->
-    <header class="bg-custom-color-main shadow p-4 flex justify-between items-center">
+    <header class=" navbar p-4 flex justify-between items-center">
         <div class="flex items-center ">
             <img src="{{ asset('images/logo-pln.png') }}" alt="Logo" class="h-18 w-12 mr-2">
             <h1 class="text-xl font-bold mr-4">Aset {{ ucfirst($category) }}</h1>
+
             <nav class="flex space-x-4">
-                <a href="{{ route('kategori') }}" class="text-gray-800 font-bold hover:text-blue-500">Kategori</a>
+                <a href="{{ route('dashboard') }}" class=" font-bold ">Dashboard</a>
+                <a href="{{ route('kategori') }}" class=" font-bold ">Kategori Aset</a>
+                <a href="{{ route('riwayat') }}" class=" font-bold ">Riwayat</a>
             </nav>
         </div>
-        <div class="flex items-center">
-            <span class="mr-4 text-gray-800 font-bold">Hello, {{ Auth::user()->name }}</span>
-            <button class="text-gray-800 font-bold focus:outline-none">Menu</button>
+        <div class="flex items-center relative group">
+            <span class="mr-4  font-bold">Hello, {{ Auth::user()->name }}</span>
+            <button class=" font-bold focus:outline-none">
+                Menu
+            </button>
+            <!-- Dropdown Menu -->
+            <div class="absolute right-0 mt-2 w-48 bg-black rounded-md shadow-lg z-10 hidden group-hover:block">
+                <a href="#" class="block px-4 py-2  "
+                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Logout</a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                    @csrf
+                </form>
+            </div>
         </div>
     </header>
+    <!-- Header -->
+
 
     <!-- Konten Utama -->
-
-    <div class="container mx-auto mt-4 p-4">
+    <div class="container mx-auto mt-4 p-4 px-4">
         <h1 class="text-2xl font-bold">Detail Aset: {{ $asset->name }}</h1>
-        <p><strong>Kategori:</strong> {{ $category }}</p>
-
-        <div class="mt-4">
-            <p><strong>ID Aset:</strong> {{ $asset->id_aset }}</p>
-            <p><strong>Nama Barang:</strong> {{ $asset->name }}</p>
-            <p><strong>Jenis Aset:</strong> {{ $asset->jenis_aset }}</p>
-            <p><strong>Tanggal Penerimaan:</strong> {{ $asset->tanggal_penerimaan }}</p>
-            <p><strong>Kategori:</strong> {{ $asset->category }}</p>
-
-            @if($asset->gambar_aset)
-            <p><strong>Gambar Aset:</strong></p>
-            <img src="{{ asset('storage/' . $asset->gambar_aset) }}" alt="{{ $asset->name }}" class="w-48 h-48">
-            @endif
+        <br>
+        @if (session('success'))
+        <div class="bg-green-500 text-white p-2 mb-4 rounded">
+            {{ session('success') }}
         </div>
+        @endif
 
-        <div class="mt-4 mt-4 flex space-x-2">
-            <button class="bg-blue-500 text-white px-4 py-2 rounded-lg text-blue-500 hover:underline"
-                onclick="openEditModal('{{ $asset->name }}', '{{ $asset->jenis_aset }}', '{{ $asset->tanggal_penerimaan }}', '{{ $asset->id }}')">
-                Edit
-            </button>
-            <form action="{{ route('asset.destroy', $asset->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus aset ini?')">
-                @csrf
-                @method('DELETE')
-                <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:underline">Hapus Aset</button>
-            </form>
+        <div class="flex gap-8 mt-4">
+            <!-- Bagian Kiri: Detail Aset -->
+            <div class="flex-1 space-y-4 p-6">
+                <div>
+                    <p class="font-semibold text-lg">ID Aset:</p>
+                    <p>{{ $asset->id_aset }}</p>
+                </div>
+                <div>
+                    <p class="font-semibold text-lg">Nama Barang:</p>
+                    <p>{{ $asset->name }}</p>
+                </div>
+                <div>
+                    <p class="font-semibold text-lg">Tanggal Penerimaan:</p>
+                    <p>{{ $asset->tanggal_penerimaan }}</p>
+                </div>
+                <p class="font-semibold text-lg">Kategori:</p>
+                <p>{{ $asset->category }}</p>
+
+                <div class="mt-4">
+                    <label for="status" class="block font-bold text-gray-700">Status Aset:</label>
+                    <form action="{{ route('asset.updateStatus', $asset->id) }}" method="POST" class="inline-block">
+                        @csrf
+                        @method('PUT')
+                        <select name="status" id="status" class="border rounded-lg px-4 py-2" onchange="this.form.submit()">
+                            <option value="Tersedia" {{ $asset->status == 'Tersedia' ? 'selected' : '' }}>Tersedia</option>
+                            <option value="Sedang Dipinjam" {{ $asset->status == 'Sedang Dipinjam' ? 'selected' : '' }}>Sedang Dipinjam</option>
+                            <option value="Rusak" {{ $asset->status == 'Rusak' ? 'selected' : '' }}>Rusak</option>
+                            <option value="Sudah Tidak Ada" {{ $asset->status == 'Sudah Tidak Ada' ? 'selected' : '' }}>Sudah Tidak Ada</option>
+                        </select>
+                    </form>
+                </div>
+
+
+                <div class="flex space-x-2 mt-4">
+                    <button class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:underline"
+                        onclick="openEditModal('{{ $asset->name }}', '{{ $asset->jenis_aset }}', '{{ $asset->tanggal_penerimaan }}', '{{ $asset->id }}')">
+                        Edit
+                    </button>
+
+                    <form action="{{ route('asset.destroy', $asset->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menghapus aset ini?')">
+                        @csrf
+                        @method('DELETE')
+                        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:underline">
+                            Hapus Aset
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Gambar Aset & QR Code -->
+            <div class="flex-1 flex flex-col items-center p-6">
+                @if($asset->gambar_aset)
+                <div class="text-center mb-4">
+                    <p><strong>Gambar Aset:</strong></p>
+                    <img src="{{ asset('storage/' . $asset->gambar_aset) }}" alt="{{ $asset->name }}" class="w-48 h-48 object-cover mx-auto">
+                </div>
+                @endif
+
+                @if(file_exists(public_path('qrcodes/' . $asset->id . '.svg')))
+                <div class="text-center mb-4">
+                    <p><strong>QR Code untuk Aset:</strong></p>
+                    <div class="w-32 h-32 p-4 flex justify-center items-center mx-auto">
+                        {!! file_get_contents(public_path('qrcodes/' . $asset->id . '.svg')) !!}
+                    </div>
+                </div>
+                @else
+                <p><strong>QR Code belum dihasilkan.</strong></p>
+                @endif
+
+                <!-- Tombol untuk Generate QR Code -->
+                @if(!$asset->qr_code) <!-- Hanya tampilkan tombol jika QR Code belum ada -->
+                <form action="{{ route('generate.qr', $asset->id) }}" method="POST" class="mt-4">
+                    @csrf
+                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg">Generate QR Code</button>
+                </form>
+                @endif
+            </div>
         </div>
     </div>
+
 
     <!-- PopUp Edit Aset -->
     <div id="editAssetModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 z-50 hidden">
@@ -70,17 +143,12 @@
 
                     <div class="mb-4">
                         <label for="nama_barang" class="block text-gray-700">Nama Barang</label>
-                        <input type="text" name="nama_barang" id="nama_barang" class="w-full px-4 py-2 border rounded-lg" required>
-                    </div>
-
-                    <div class="mb-4">
-                        <label for="jenis_aset" class="block text-gray-700">Jenis Aset</label>
-                        <input type="text" name="jenis_aset" id="jenis_aset" class="w-full px-4 py-2 border rounded-lg" required>
+                        <input type="text" name="name" id="nama_barang" class="w-full px-4 py-2 border rounded-lg" value="{{ $asset->name }}" required>
                     </div>
 
                     <div class="mb-4">
                         <label for="tanggal_penerimaan" class="block text-gray-700">Tanggal Penerimaan</label>
-                        <input type="date" name="tanggal_penerimaan" id="tanggal_penerimaan" class="w-full px-4 py-2 border rounded-lg" required>
+                        <input type="date" name="tanggal_penerimaan" id="tanggal_penerimaan" class="w-full px-4 py-2 border rounded-lg" value="{{ $asset->tanggal_penerimaan }}" required>
                     </div>
 
                     <div class="mb-4">
@@ -91,18 +159,16 @@
                     <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded-lg">Simpan Perubahan</button>
                     <button type="button" class="bg-red-500 text-white px-4 py-2 rounded-lg" onclick="closeModal()">Batal</button>
                 </form>
+
             </div>
         </div>
     </div>
     <!-- PopUp Edit Aset -->
 
-    <!-- Konten Utama -->
-
     <script>
         function openEditModal(name, jenis_aset, tanggal_penerimaan, id) {
             // Isi form dengan data yang diterima
             document.getElementById('nama_barang').value = name;
-            document.getElementById('jenis_aset').value = jenis_aset;
             document.getElementById('tanggal_penerimaan').value = tanggal_penerimaan;
 
             // Atur action form untuk mengarah ke rute update
@@ -111,8 +177,6 @@
             // Tampilkan modal
             document.getElementById('editAssetModal').classList.remove('hidden');
         }
-
-
 
         function closeModal() {
             document.getElementById('editAssetModal').classList.add('hidden');

@@ -10,18 +10,20 @@ class RiwayatController extends Controller
 {
     //
     public function index()
-    {
-        $riwayat = Riwayat::with('asset')->get(); // Jika ada relasi dengan tabel asset
+{
+    // Mengambil riwayat 
+    $riwayat = Riwayat::with('asset')->get(); 
 
         return view('riwayat', compact('riwayat'));
-    }
+}
+
 
     public function destroy($id)
     {
         //Mencari riwayat berdasarkan ID
         $riwayat = Riwayat::find($id);
 
-        if(!$riwayat){
+        if (!$riwayat) {
             return redirect()->back()->withErrors(['message' => 'Riwayat tidak ditemukan.']);
         }
 

@@ -11,8 +11,10 @@ class riwayat extends Model
 
     protected $table = 'riwayat'; 
 
+    // Relasi ke asset
     public function asset()
     {
-        return $this->belongsTo(Asset::class, 'asset_id'); // Menghubungkan dengan model Asset
+        return $this->belongsTo(Asset::class, 'asset_id');
     }
 }
+
