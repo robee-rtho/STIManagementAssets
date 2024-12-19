@@ -58,6 +58,19 @@ class AssetController extends Controller
         return redirect()->route('assets.show', ['id' => $asset->id])->with('success', 'Aset berhasil diperbarui!');
     }
 
+    public function updateStatus(Request $request, $id)
+    {
+        $request->validate([
+            'status' => 'required|string',
+        ]);
+
+        $asset = Asset::findOrFail($id);
+        $asset->status = $request->status;
+        $asset->save();
+
+        return back()->with('success', 'Status aset berhasil diperbarui.');
+    }
+
     // Hapus Asset
     public function destroy($id)
     {
