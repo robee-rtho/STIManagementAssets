@@ -16,7 +16,7 @@
     <!-- Header -->
     <header class=" navbar p-4 flex justify-between items-center">
         <div class="flex items-center">
-            <img src="{{ asset('http://127.0.0.1:8000/images/logo-pln.png') }}" alt="Logo" class="h-18 w-12 mr-2">
+            <img src="{{ asset('images/logo-pln.png') }}" alt="Logo" class="h-18 w-12 mr-2">
             <h1 class="text-xl font-bold ">
                 <a href="{{ route('dashboard') }}">Dashboard </a>
             </h1>

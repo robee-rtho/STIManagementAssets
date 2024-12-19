@@ -13,7 +13,7 @@
     <div class="card">
         <!-- Bagian Header dengan Logo dan Tulisan LOGIN -->
         <div class="flex justify-center items-center mb-6">
-            <img src="{{ asset('http://127.0.0.1:8000/images/logo-pln.png') }}" alt="Logo" class="h-18 w-12 mr-2">
+            <img src="{{ asset('images/logo-pln.png') }}" alt="Logo" class="h-18 w-12 mr-2">
             <h2 class="text-2xl font-bold text-gray-700">LOGIN</h2>
         </div>
 

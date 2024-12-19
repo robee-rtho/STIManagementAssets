@@ -119,13 +119,7 @@
                 <p><strong>QR Code belum dihasilkan.</strong></p>
                 @endif
 
-                <!-- Tombol untuk Generate QR Code -->
-                @if(!$asset->qr_code) <!-- Hanya tampilkan tombol jika QR Code belum ada -->
-                <form action="{{ route('generate.qr', $asset->id) }}" method="POST" class="mt-4">
-                    @csrf
-                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded-lg">Generate QR Code</button>
-                </form>
-                @endif
+                
             </div>
         </div>
     </div>
@@ -147,11 +141,6 @@
                     </div>
 
                     <div class="mb-4">
-                        <label for="tanggal_penerimaan" class="block text-gray-700">Tanggal Penerimaan</label>
-                        <input type="date" name="tanggal_penerimaan" id="tanggal_penerimaan" class="w-full px-4 py-2 border rounded-lg" value="{{ $asset->tanggal_penerimaan }}" required>
-                    </div>
-
-                    <div class="mb-4">
                         <label for="gambar_aset" class="block text-gray-700">Gambar Aset (optional)</label>
                         <input type="file" name="gambar_aset" id="gambar_aset" class="w-full px-4 py-2 border rounded-lg">
                     </div>
@@ -166,10 +155,9 @@
     <!-- PopUp Edit Aset -->
 
     <script>
-        function openEditModal(name, jenis_aset, tanggal_penerimaan, id) {
+        function openEditModal(name, jenis_aset, id) {
             // Isi form dengan data yang diterima
             document.getElementById('nama_barang').value = name;
-            document.getElementById('tanggal_penerimaan').value = tanggal_penerimaan;
 
             // Atur action form untuk mengarah ke rute update
             document.getElementById('editAssetForm').action = '/asset/' + id;

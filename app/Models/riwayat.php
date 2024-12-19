@@ -18,3 +18,4 @@ class riwayat extends Model
     }
 }
 
+?>

@@ -10,7 +10,7 @@ use App\Models\Asset;
 
 class KategoriController extends Controller
 {
-    
+
     public function show($category, Request $request)
     {
         // Query untuk mendapatkan aset berdasarkan kategori
@@ -21,7 +21,7 @@ class KategoriController extends Controller
             $query->where('status', $request->status);
         }
 
-        
+
         $assets = $query->get();
 
         return view('category.show', compact('assets', 'category'));
@@ -60,6 +60,16 @@ class KategoriController extends Controller
         }
 
         $asset->save();
+
+        // Generate QR Code setelah menyimpan data
+        $link = route('asset.show', ['id' => $asset->id]);
+
+        // Generate QR Code sebagai SVG
+        $qrCodeSVG = \QrCode::format('svg')->size(100)->generate($link);
+
+        // Simpan QR Code secara lokal atau ke database
+        $path = 'qrcodes/' . $asset->id . '.svg'; // Path relatif ke folder public
+        file_put_contents(public_path($path), $qrCodeSVG);
 
         // Simpan riwayat
         $riwayat = new Riwayat();

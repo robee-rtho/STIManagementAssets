@@ -58,32 +58,6 @@ class AssetController extends Controller
         return redirect()->route('assets.show', ['id' => $asset->id])->with('success', 'Aset berhasil diperbarui!');
     }
 
-    public function generateQRCode($id)
-    {
-        $link = route('asset.show', ['id' => $id]);
-
-        $qrCodeSVG = \QrCode::format('svg')->size(100)->generate($link);
-
-
-        $path = public_path('qrcodes/' . $id . '.svg');
-        file_put_contents($path, $qrCodeSVG);
-
-        return back()->with('success', 'QR Code berhasil di-generate dan disimpan.');
-    }
-
-    public function updateStatus(Request $request, $id)
-    {
-        $request->validate([
-            'status' => 'required|string',
-        ]);
-
-        $asset = Asset::findOrFail($id);
-        $asset->status = $request->status;
-        $asset->save();
-
-        return back()->with('success', 'Status aset berhasil diperbarui.');
-    }
-
     // Hapus Asset
     public function destroy($id)
     {

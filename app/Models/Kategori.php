@@ -22,3 +22,5 @@ class Kategori extends Model
 
     public $timestamps = true;
 }
+
+?>
