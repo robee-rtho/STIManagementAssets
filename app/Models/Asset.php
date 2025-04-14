@@ -23,4 +23,9 @@ class Asset extends Model
     {
         return $this->belongsTo(Kategori::class, 'name', 'name');
     }
+
+    public function riwayatPerbaikans()
+{
+    return $this->hasMany(RiwayatPerbaikan::class);
+}
 }

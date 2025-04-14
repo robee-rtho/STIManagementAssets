@@ -6,6 +6,8 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Detail Aset</title>
     @vite('resources/css/app.css')
+    <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet">
+    <link href="https://cdn.datatables.net/responsive/2.2.3/css/responsive.dataTables.min.css" rel="stylesheet">
 </head>
 
 <body>
@@ -119,9 +121,45 @@
                 <p><strong>QR Code belum dihasilkan.</strong></p>
                 @endif
 
-                
+
             </div>
         </div>
+
+<!-- Tabel Daftar Aset -->
+<h3 class="text-lg font-bold mt-6">Riwayat Perbaikan:</h3>
+<div class="overflow-x-auto">
+
+<div id='recipients' class="p-8 mt-1 lg:mt-0 rounded shadow bg-white">
+
+
+    <table id="example" class="stripe hover" style="width:100%;  padding-bottom: 1em;">
+        <thead>
+            <tr>
+                <th data-priority="1">Tanggal Rusak</th>
+                <th data-priority="2">Tanggal Perbaikan</th>
+                <th data-priority="3">Keterangan</th>
+
+            </tr>
+        </thead>
+        <tbody>
+        @foreach ($asset->riwayatPerbaikans as $riwayat)
+            <tr>
+                <td data-priority="">{{ $riwayat->tanggal_rusak ?? '-'  }}</td>
+                <td data-priority="">{{ $riwayat->tanggal_perbaikan ?? '-' }}</td>
+                <td data-priority="">{{ $riwayat->keterangan}}</td>
+            </tr>
+            @endforeach
+        </tbody>
+    </table>
+
+
+</div>
+
+</div>
+<!-- Tabel Daftar Aset --> 
+        <button onclick="document.getElementById('modal-riwayat').classList.remove('hidden')"
+            class="bg-blue-500 text-white px-4 py-2 rounded">Tambah Riwayat Perbaikan</button>
+
     </div>
 
 
@@ -154,6 +192,42 @@
     </div>
     <!-- PopUp Edit Aset -->
 
+    <!-- PopUp Riwayat Aset -->
+    <div id="modal-riwayat" class="hidden fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-40 z-50">
+        <div class="bg-white p-6 rounded shadow-md w-96">
+            <form action="{{ route('riwayat-perbaikan.store') }}" method="POST">
+                @csrf
+                <input type="hidden" name="asset_id" value="{{ $asset->id }}">
+
+                <div class="mb-4">
+
+                    <label for="name" class="block text-gray-700">Keterangan (maksimal 255 karakter)</label>
+                    <input type="text" name="keterangan" id="name" maxlength="255" class="w-full px-4 py-2 border rounded-lg" placeholder="Masukkan Keterangan" required>
+                    @error('name')
+                    <div class="text-red-500 text-sm mt-1">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                <div class="mb-4">
+                    <label class="block">Tanggal Rusak</label>
+                    <input type="date" name="tanggal_rusak" class="w-full border rounded px-3 py-2">
+                </div>
+
+                <div class="mb-4">
+                    <label class="block">Tanggal Perbaikan</label>
+                    <input type="date" name="tanggal_perbaikan" class="w-full border rounded px-3 py-2">
+                </div>
+
+                <div class="flex justify-between">
+                    <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Simpan</button>
+                    <button type="button" onclick="document.getElementById('modal-riwayat').classList.add('hidden')"
+                        class="bg-red-500 text-white px-4 py-2 rounded">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+    <!-- PopUp Riwayat Aset -->
+
     <script>
         function openEditModal(name, jenis_aset, id) {
             // Isi form dengan data yang diterima
@@ -170,6 +244,23 @@
             document.getElementById('editAssetModal').classList.add('hidden');
         }
     </script>
+     <script type="text/javascript" src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+
+
+<script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.2.3/js/dataTables.responsive.min.js"></script>
+<script>
+    $(document).ready(function() {
+        var table = $('#example').DataTable({
+            responsive: true,
+            columnDefs: [{
+                    orderable: false,
+                    targets: 3
+                } // Menonaktifkan sort di kolom ke-4 
+            ]
+        }).columns.adjust().responsive.recalc();
+    });
+</script>
 </body>
 
 </html>

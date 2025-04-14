@@ -7,6 +7,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\KategoriController;
 use App\Http\Controllers\RiwayatController;
 Use App\Http\Controllers\TambahKategori;
+use App\Http\Controllers\RiwayatPerbaikanController;
 
 // Route::get('/', function () {
 //     return view('login');
@@ -32,5 +33,7 @@ Route::group(['middleware' => ['auth']], function () {
     Route::delete('/asset/{id}', [AssetController::class, 'destroy'])->name('asset.destroy');
     Route::post('/asset/{id}/generate-qr', [AssetController::class, 'generateQRCode'])->name('generate.qr');
     Route::put('/asset/{id}/update-status', [AssetController::class, 'updateStatus'])->name('asset.updateStatus');
+    Route::post('/riwayat-perbaikan', [RiwayatPerbaikanController::class, 'store'])->name('riwayat-perbaikan.store');
+
 
 });
